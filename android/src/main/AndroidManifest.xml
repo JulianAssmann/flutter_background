@@ -1,0 +1,14 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+  package="de.julianassmann.flutter_background">
+
+
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+
+    <application>
+        <service android:name=".IsolateHolderService">
+            <!--android:exported="false"
+            android:foregroundServiceType="connectedDevice|dataSync" -->
+        </service>
+    </application>
+</manifest>

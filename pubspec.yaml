@@ -1,0 +1,26 @@
+name: flutter_background
+description: A plugin to keep flutter apps running in the background.
+version: 0.1.0
+repository: https://github.com/JulianAssmann/flutter_background
+homepage: https://julianassmann.de/
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+  flutter: ">=1.20.0 <2.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: de.julianassmann.flutter_background
+        pluginClass: FlutterBackgroundPlugin
+      # ios:
+      #   pluginClass: FlutterBackgroundPlugin
