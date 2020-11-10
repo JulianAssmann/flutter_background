@@ -15,13 +15,13 @@ class FlutterBackground {
   /// Does nothing and returns true if the permissions are already granted.
   /// Returns true, if the user grants the permissions, otherwise false.
   /// May throw a [PlatformException].
-  static Future<bool> initialize({
-    FlutterBackgroundAndroidConfig androidConfig = const FlutterBackgroundAndroidConfig()
-  }) async {
+  static Future<bool> initialize(
+      {FlutterBackgroundAndroidConfig androidConfig =
+          const FlutterBackgroundAndroidConfig()}) async {
     if (await FlutterBackground.hasPermissions) {
       _isInitialized = true;
     } else {
-      _isInitialized =  await _channel.invokeMethod('initialize', {
+      _isInitialized = await _channel.invokeMethod('initialize', {
         "android.notificationTitle": androidConfig.notificationTitle,
         "android.notificationText": androidConfig.notificationText,
         "android.notificationImportance": _androidNotificationImportanceToInt(
@@ -40,7 +40,7 @@ class FlutterBackground {
     return await _channel.invokeMethod('hasPermissions') as bool;
   }
 
-  /// Enables the execution of the flutter app in the background. 
+  /// Enables the execution of the flutter app in the background.
   /// You must to call [FlutterBackground.initialize()] before calling this function.
   ///
   /// Returns true if successful, otherwise false.
@@ -50,11 +50,12 @@ class FlutterBackground {
     if (_isInitialized) {
       return await _channel.invokeMethod('enableBackgroundExecution') as bool;
     } else {
-      throw Exception("FlutterBackground plugin must be initialized before calling enableBackgroundExecution()");
+      throw Exception(
+          "FlutterBackground plugin must be initialized before calling enableBackgroundExecution()");
     }
   }
 
-  /// Disables the execution of the flutter app in the background. 
+  /// Disables the execution of the flutter app in the background.
   /// You must to call [FlutterBackground.initialize()] before calling this function.
   ///
   /// Returns true if successful, otherwise false.
@@ -64,19 +65,25 @@ class FlutterBackground {
     if (_isInitialized) {
       return await _channel.invokeMethod('disableBackgroundExecution');
     } else {
-      throw Exception("FlutterBackground plugin must be initialized before calling disableBackgroundExecution()");
+      throw Exception(
+          "FlutterBackground plugin must be initialized before calling disableBackgroundExecution()");
     }
   }
 
-  static int _androidNotificationImportanceToInt(AndroidNotificationImportance importance) {
-  switch (importance) {
-    case AndroidNotificationImportance.Low: return -1;
-    case AndroidNotificationImportance.Min: return -2;
-    case AndroidNotificationImportance.High: return 1;
-    case AndroidNotificationImportance.Max: return 2;
-    case AndroidNotificationImportance.Default:
-    default: 
-      return 0;
+  static int _androidNotificationImportanceToInt(
+      AndroidNotificationImportance importance) {
+    switch (importance) {
+      case AndroidNotificationImportance.Low:
+        return -1;
+      case AndroidNotificationImportance.Min:
+        return -2;
+      case AndroidNotificationImportance.High:
+        return 1;
+      case AndroidNotificationImportance.Max:
+        return 2;
+      case AndroidNotificationImportance.Default:
+      default:
+        return 0;
+    }
   }
-}
 }
