@@ -29,8 +29,8 @@ class TcpClientState {
 
   TcpClientState copyWithNewMessage({@required Message message}) {
     return TcpClientState(
-      connectionState: this.connectionState,
-      messages: List.from(this.messages)..add(message),
+      connectionState: connectionState,
+      messages: List.from(messages)..add(message),
     );
   }
 }

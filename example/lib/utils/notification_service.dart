@@ -32,7 +32,7 @@ class NotificationService {
 
     AndroidNotificationDetails androidNotificationDetails;
 
-    String channelName = "Text messages";
+    final channelName = 'Text messages';
     
     androidNotificationDetails = AndroidNotificationDetails(
       channelName, channelName, channelName,

@@ -1,6 +1,6 @@
 name: flutter_background
 description: A plugin to keep flutter apps running in the background by using foreground service, wake lock and disabling battery optimizations
-version: 0.1.1
+version: 0.1.2
 repository: https://github.com/JulianAssmann/flutter_background
 homepage: https://julianassmann.de/
 
@@ -15,6 +15,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  pedantic: ^1.9.0
 
 flutter:
   plugin:

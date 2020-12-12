@@ -5,5 +5,4 @@ void main() {
   // const MethodChannel channel = MethodChannel('flutter_background');
 
   TestWidgetsFlutterBinding.ensureInitialized();
-
 }

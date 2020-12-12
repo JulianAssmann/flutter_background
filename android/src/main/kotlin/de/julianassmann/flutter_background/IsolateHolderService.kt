@@ -1,5 +1,6 @@
 package de.julianassmann.flutter_background
 
+import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
@@ -33,13 +34,15 @@ class IsolateHolderService : Service() {
         val EXTRA_NOTIFICATION_TEXT = "de.julianassmann.flutter_background:Text"
     }
 
-    override fun onBind(p0: Intent) : IBinder? {
+    override fun onBind(intent: Intent) : IBinder? {
         return null;
     }
 
+    @SuppressLint("WakelockTimeout")
     override fun onCreate() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(CHANNEL_ID,
+            val channel = NotificationChannel(
+                    CHANNEL_ID,
                     FlutterBackgroundPlugin.notificationTitle,
                     FlutterBackgroundPlugin.notificationImportance ?: NotificationCompat.PRIORITY_DEFAULT).apply {
                 description = FlutterBackgroundPlugin.notificationText

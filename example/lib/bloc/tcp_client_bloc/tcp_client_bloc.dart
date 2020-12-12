@@ -36,15 +36,20 @@ class TcpClientBloc extends Bloc<TcpClientEvent, TcpClientState> {
   Stream<TcpClientState> _mapConnectToState(Connect event) async* {
     yield state.copywith(connectionState: SocketConnectionState.Connecting);
 
-    bool hasPermissions = await FlutterBackground.initialize();
+    final hasPermissions = await FlutterBackground.initialize(
+      androidConfig: FlutterBackgroundAndroidConfig(
+        notificationTitle: 'flutter_background example app',
+        notificationText: 'Background notification for keeping the example app running in the background'
+      )
+    );
     if (hasPermissions) {
-      bool backgroundExecution = await FlutterBackground.enableBackgroundExecution();
+      final backgroundExecution = await FlutterBackground.enableBackgroundExecution();
       if (backgroundExecution) {
         try {
           _socket = await Socket.connect(event.host, event.port);
 
           _socketStreamSub = _socket.asBroadcastStream().listen((event) {
-            this.add(
+            add(
               MessageReceived(
                 message: Message(
                   message: String.fromCharCodes(event),
@@ -55,7 +60,7 @@ class TcpClientBloc extends Bloc<TcpClientEvent, TcpClientState> {
             );
           });
           _socket.handleError(() {
-            this.add(ErrorOccured());
+            add(ErrorOccured());
           });
 
           yield state.copywith(connectionState: SocketConnectionState.Connected);
@@ -104,7 +109,7 @@ class TcpClientBloc extends Bloc<TcpClientEvent, TcpClientState> {
   }
 
   Stream<TcpClientState> _mapMessageReceivedToState(MessageReceived event) async* {
-    NotificationService().newNotification(event.message.message, false);
+    await NotificationService().newNotification(event.message.message, false);
     yield state.copyWithNewMessage(message: event.message);
   }
 }

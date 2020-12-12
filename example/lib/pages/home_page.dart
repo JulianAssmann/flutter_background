@@ -26,9 +26,9 @@ class _MainPageState extends State<MainPage> {
     super.initState();
     _tcpBloc =  BlocProvider.of<TcpClientBloc>(context);
 
-    _hostEditingController = new TextEditingController(text: '10.0.2.2');
-    _portEditingController = new TextEditingController(text: '8000');
-    _chatTextEditingController = new TextEditingController(text: '');
+    _hostEditingController = TextEditingController(text: '10.0.2.2');
+    _portEditingController = TextEditingController(text: '8000');
+    _chatTextEditingController = TextEditingController(text: '');
 
     _chatTextEditingController.addListener(() {
       setState(() {
@@ -68,7 +68,7 @@ class _MainPageState extends State<MainPage> {
                 SnackBar(
                   content: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [Text("Connection failed"), Icon(Icons.error)],
+                    children: [Text('Connection failed'), Icon(Icons.error)],
                   ),
                   backgroundColor: Colors.red,
                 ),
@@ -85,7 +85,7 @@ class _MainPageState extends State<MainPage> {
                 children: [
                   TextFormField(
                     controller: _hostEditingController,
-                    autovalidate: true,
+                    autovalidateMode: AutovalidateMode.always,
                     validator: (str) => isValidHost(str) ? null : 'Invalid hostname',
                     decoration: InputDecoration(
                       helperText: 'The ip address or hostname of the TCP server',
@@ -94,7 +94,7 @@ class _MainPageState extends State<MainPage> {
                   ),
                   TextFormField(
                     controller: _portEditingController,
-                    autovalidate: true,
+                    autovalidateMode: AutovalidateMode.always,
                     validator: (str) => isValidPort(str) ? null : 'Invalid port',
                     decoration: InputDecoration(
                       helperText: 'The port the TCP server is listening on',
@@ -140,7 +140,7 @@ class _MainPageState extends State<MainPage> {
                     child: ListView.builder(
                       itemCount: state.messages.length,
                       itemBuilder: (context, idx) {
-                        Message m = state.messages[idx];
+                        final m = state.messages[idx];
                         return Bubble(
                           child: Text(m.message),
                           alignment: m.origin == MessageOrigin.Client ? Alignment.centerRight : Alignment.centerLeft,

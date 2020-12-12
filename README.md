@@ -88,8 +88,15 @@ The example is a TCP chat app: It can connect to a TCP server and send and recei
 
 Using this plugin, the example app can maintain the TCP connection with the server, receiving messages and creating notifications for the user even when in the background.
 
-## Maintainers
+## ToDo
 
-* [Julian Aßmann](https://github.com/JulianAssmann)
+- Add automated tests
+- On android, add [ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS](https://developer.android.com/reference/android/provider/Settings#ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS) as an option to obtain excemption from battery optimizations, as declaring [REQUEST_IGNORE_BATTERY_OPTIMIZATIONS](https://developer.android.com/reference/android/Manifest.permission.html#REQUEST_IGNORE_BATTERY_OPTIMIZATIONS) might lead to a ban of the app in the Play Store, "unless the core function of the app is adversely affected" (see the note [here](https://developer.android.com/training/monitoring-device-state/doze-standby.html#support_for_other_use_cases))
+- Explore options of background execution for iOS (help needed, I don't have any Mac/iOS devices or experience with programming for them)
 
-Pull requests are always very welcome. If you know a way to enable background execution of flutter apps in iOS, I would love to see a pull request implementing it.
+If you experience any problems with this package, please [create an issue on Github](https://github.com/JulianAssmann/flutter_background/issues).
+Pull requests are also very welcome.
+
+## Maintainer
+
+[Julian Aßmann](https://github.com/JulianAssmann)

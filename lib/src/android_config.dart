@@ -26,8 +26,8 @@ class FlutterBackgroundAndroidConfig {
   /// [notificationImportance] is the importance of the foreground service notification.
   /// It must be greater than [AndroidNotificationImportance.Min].
   const FlutterBackgroundAndroidConfig(
-      {this.notificationTitle = "Notification title",
-      this.notificationText = "Notification text",
+      {this.notificationTitle = 'Notification title',
+      this.notificationText = 'Notification text',
       this.notificationImportance = AndroidNotificationImportance.Default})
       : assert(notificationTitle != null),
         assert(notificationText != null),
