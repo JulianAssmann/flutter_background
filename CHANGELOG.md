@@ -15,3 +15,7 @@
 * Fix some typos
 * Add analysis_options.yaml based on pedantic v. 1.9.0 for static analysis and conform to it
 * Update example app and server
+
+## 0.1.2+1
+
+* Conform to dart formatting standards to improve pub.dev score

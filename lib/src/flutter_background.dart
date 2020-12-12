@@ -4,8 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_background/src/android_config.dart';
 
 class FlutterBackground {
-  static const MethodChannel _channel =
-      MethodChannel('flutter_background');
+  static const MethodChannel _channel = MethodChannel('flutter_background');
 
   static bool _isInitialized = false;
 
