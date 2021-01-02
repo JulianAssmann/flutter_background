@@ -85,5 +85,10 @@ class IsolateHolderService : Service() {
             stopSelf()
         }
         return START_STICKY;
+    } 
+
+    override fun onTaskRemoved(rootIntent: Intent) {
+        super.onTaskRemoved(rootIntent);
+        stopSelf();
     }
 }
