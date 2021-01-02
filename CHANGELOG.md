@@ -19,3 +19,7 @@
 ## 0.1.2+1
 
 * Conform to dart formatting standards to improve pub.dev score
+
+## 0.1.3
+
+* Stop IsolateHolderService when app is killed with swipe to remove
