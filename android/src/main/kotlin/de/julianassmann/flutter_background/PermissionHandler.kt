@@ -49,14 +49,12 @@ class PermissionHandler(private val context: Context,
             when {
                 powerManager.isIgnoringBatteryOptimizations(context.packageName) -> {
                     result.success(true)
-                    return
                 }
                 context.checkSelfPermission(Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS) == PackageManager.PERMISSION_DENIED -> {
                     result.error(
                             "flutter_background.PermissionHandler",
                             "The app does not have the REQUEST_IGNORE_BATTERY_OPTIMIZATIONS permission required to ask the user for whitelisting. See the documentation on how to setup this plugin properly.",
                             null)
-                    return
                 }
                 else -> {
                     addActivityResultListener(PermissionActivityResultListener(result::success, result::error))
@@ -76,16 +74,16 @@ class PermissionActivityResultListener(
 
     private var alreadyCalled: Boolean = false;
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
-        if (alreadyCalled || requestCode != PermissionHandler.PERMISSION_CODE_IGNORE_BATTERY_OPTIMIZATIONS) {
-            return false;
-        }
+        try {
+            if (alreadyCalled || requestCode != PermissionHandler.PERMISSION_CODE_IGNORE_BATTERY_OPTIMIZATIONS) {
+                return false
+            }
 
-        alreadyCalled = true;
+            alreadyCalled = true
 
-        if(resultCode == Activity.RESULT_OK) {
-            onSuccess(true)
-        } else {
-            onSuccess(false)
+            onSuccess(resultCode == Activity.RESULT_OK)
+        } catch (ex: Exception) {
+            onError("flutter_background.PermissionHandler", "Error while waiting for user to disable battery optimizations", ex.localizedMessage)
         }
 
         return true

@@ -41,63 +41,58 @@ class FlutterBackgroundPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   }
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
-    print(call.method)
+
+    // System.out.println(call.method)
+    // System.out.flush()
+
     when (call.method) {
       "getPlatformVersion" -> {
         result.success("Android ${android.os.Build.VERSION.RELEASE}")
       }
       "hasPermissions" -> {
-        var hasPermissions = true
-        if (!permissionHandler!!.isIgnoringBatteryOptimizations()) {
-          hasPermissions = false
-        }
-        if (!permissionHandler!!.isWakeLockPermissionGranted()) {
-          hasPermissions = false;
-        }
+        var hasPermissions = permissionHandler!!.isIgnoringBatteryOptimizations()
+                && permissionHandler!!.isWakeLockPermissionGranted()
         result.success(hasPermissions)
       }
       "initialize" -> {
-        // Ensure all the necessary permissions are granted, otherwise request them
-        if (!permissionHandler!!.isWakeLockPermissionGranted()) {
-          result.error("PermissionError","Please add the WAKE_LOCK permission to the AndroidManifest.xml in order to use background_sockets.", "")
-          return
-        }
-        if (!permissionHandler!!.isIgnoringBatteryOptimizations()) {
-          if (activity != null) {
-            permissionHandler!!.requestBatteryOptimizationsOff(result, activity!!)
-          } else {
-            result.error("NoActivityError", "The plugin is not attached to an activity", "The plugin is not attached to an activity. This is required in order to request battery optimzation to be off.")
-          }
-        }
-
         val title = call.argument<String>("android.notificationTitle")
         val text = call.argument<String>("android.notificationText")
         val importance = call.argument<Int>("android.notificationImportance")
 
         // Set static values so the IsolateHolderService can use them later on to configure the notification
-        Companion.notificationImportance = importance ?: NotificationCompat.PRIORITY_DEFAULT
-        Companion.notificationTitle = title ?: "flutter_background foreground service"
-        Companion.notificationText = text ?: "Keeps the flutter app running in the background"
+        notificationImportance = importance ?: NotificationCompat.PRIORITY_DEFAULT
+        notificationTitle = title ?: "flutter_background foreground service"
+        notificationText = text ?: "Keeps the flutter app running in the background"
 
-        result.success(true)
+        // Ensure all the necessary permissions are granted, otherwise request them
+        if (!permissionHandler!!.isWakeLockPermissionGranted()) {
+          result.error("PermissionError","Please add the WAKE_LOCK permission to the AndroidManifest.xml in order to use background_sockets.", "")
+        } else if (!permissionHandler!!.isIgnoringBatteryOptimizations()) {
+          if (activity != null) {
+            permissionHandler!!.requestBatteryOptimizationsOff(result, activity!!)
+          } else {
+            result.error("NoActivityError", "The plugin is not attached to an activity", "The plugin is not attached to an activity. This is required in order to request battery optimization to be off.")
+          }
+        } else {
+          result.success(true)
+        }
       }
       "enableBackgroundExecution" -> {
         // Ensure all the necessary permissions are granted
         if (!permissionHandler!!.isWakeLockPermissionGranted()) {
           result.error("PermissionError", "Please add the WAKE_LOCK permission to the AndroidManifest.xml in order to use background_sockets.", "")
           return
-        }
-        if (!permissionHandler!!.isIgnoringBatteryOptimizations()) {
+        } else if (!permissionHandler!!.isIgnoringBatteryOptimizations()) {
           result.error("PermissionError", "The battery optimizations are not turned off.", "")
-          return
-        }
-        val intent = Intent(context, IsolateHolderService::class.java)
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-          context!!.startForegroundService(intent)
         } else {
-          context!!.startService(intent)
+          val intent = Intent(context, IsolateHolderService::class.java)
+          if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            context!!.startForegroundService(intent)
+          } else {
+            context!!.startService(intent)
+          }
+          result.success(true)
         }
-        result.success(true)
       }
       "disableBackgroundExecution" -> {
         val intent = Intent(context!!, IsolateHolderService::class.java)
