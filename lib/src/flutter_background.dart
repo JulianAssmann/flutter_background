@@ -29,7 +29,7 @@ class FlutterBackground {
   /// Indicates whether or not the user has given the necessary permissions in order to run in the background.
   ///
   /// Returns true, if the user has granted the permission, otherwise false.
-  /// May throw a [PlatfromException].
+  /// May throw a [PlatformException].
   static Future<bool> get hasPermissions async {
     return await _channel.invokeMethod('hasPermissions') as bool;
   }

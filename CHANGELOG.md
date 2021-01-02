@@ -16,10 +16,14 @@
 * Add analysis_options.yaml based on pedantic v. 1.9.0 for static analysis and conform to it
 * Update example app and server
 
-## 0.1.2+1
-
-* Conform to dart formatting standards to improve pub.dev score
-
 ## 0.1.3
 
 * Stop IsolateHolderService when app is killed with swipe to remove
+
+## 0.1.4
+
+* Fix bug where calling `FlutterBackground.initialize()` for the first time crashes the app
+* Fix bug where calling `FlutterBackground.hasPermissions` for the first time crashes the app
+* Fix some typos
+* Address notification icon in the documentation
+* Enhance error handling in example app

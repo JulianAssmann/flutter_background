@@ -2,7 +2,7 @@
 
 A plugin to keep flutter apps running in the background. Currently only works with Android.
 
-It achives this functionality by running an [Android foreground service](https://developer.android.com/guide/components/foreground-services) in combination with a [partial wake lock](https://developer.android.com/training/scheduling/wakelock#cpu) and [disabling battery optimizations](https://developer.android.com/training/monitoring-device-state/doze-standby#support_for_other_use_cases) in order to keep the flutter isolate running.
+It achieves this functionality by running an [Android foreground service](https://developer.android.com/guide/components/foreground-services) in combination with a [partial wake lock](https://developer.android.com/training/scheduling/wakelock#cpu) and [disabling battery optimizations](https://developer.android.com/training/monitoring-device-state/doze-standby#support_for_other_use_cases) in order to keep the flutter isolate running.
 
 **Note:** This plugin currently only works with Android.
 PRs for iOS are very welcome, although I am not sure if a similiar effect can be achieved with iOS at all.
@@ -82,6 +82,11 @@ await FlutterBackground.disbleBackgroundExecution();
 
 you can stop the background execution of the app. You must call `FlutterBackground.initialize()` before calling `FlutterBackground.disbleBackgroundExecution()`.
 
+### Notes
+
+The plugin is currently hard-coded to load the icon for the foreground service notification from a drawable resource with the identifier `ic_launcher`. 
+So if you want to change the logo for the notification, you have to change this resource. I'm planning to allow for custom resource names.
+
 ## Example
 
 The example is a TCP chat app: It can connect to a TCP server and send and receive messages. The user is notified about incoming messages by notifications created with the plugin [flutter_local_notifications](https://pub.dev/packages/flutter_local_notifications).
@@ -92,11 +97,12 @@ Using this plugin, the example app can maintain the TCP connection with the serv
 
 - Add automated tests
 - On android, add [ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS](https://developer.android.com/reference/android/provider/Settings#ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS) as an option to obtain excemption from battery optimizations, as declaring [REQUEST_IGNORE_BATTERY_OPTIMIZATIONS](https://developer.android.com/reference/android/Manifest.permission.html#REQUEST_IGNORE_BATTERY_OPTIMIZATIONS) might lead to a ban of the app in the Play Store, "unless the core function of the app is adversely affected" (see the note [here](https://developer.android.com/training/monitoring-device-state/doze-standby.html#support_for_other_use_cases))
+- On android, allow for other notification icon resource names than `ic_launcher`
 - Explore options of background execution for iOS (help needed, I don't have any Mac/iOS devices or experience with programming for them)
-
-If you experience any problems with this package, please [create an issue on Github](https://github.com/JulianAssmann/flutter_background/issues).
-Pull requests are also very welcome.
 
 ## Maintainer
 
 [Julian Aßmann](https://github.com/JulianAssmann)
+
+If you experience any problems with this package, please [create an issue on Github](https://github.com/JulianAssmann/flutter_background/issues).
+Pull requests are also very welcome.

@@ -36,12 +36,21 @@ class TcpClientBloc extends Bloc<TcpClientEvent, TcpClientState> {
   Stream<TcpClientState> _mapConnectToState(Connect event) async* {
     yield state.copywith(connectionState: SocketConnectionState.Connecting);
 
-    final hasPermissions = await FlutterBackground.initialize(
-      androidConfig: FlutterBackgroundAndroidConfig(
-        notificationTitle: 'flutter_background example app',
-        notificationText: 'Background notification for keeping the example app running in the background'
-      )
-    );
+    var hasPermissions = await FlutterBackground.hasPermissions;
+    if (!hasPermissions) {
+      // TODO: Show warning to user or something
+      print('hasPermissions: $hasPermissions');
+    }
+    try {
+      hasPermissions = await FlutterBackground.initialize(
+        androidConfig: FlutterBackgroundAndroidConfig(
+          notificationTitle: 'flutter_background example app',
+          notificationText: 'Background notification for keeping the example app running in the background'
+        )
+      );
+    } catch (ex) {
+      print(ex);
+    }
     if (hasPermissions) {
       final backgroundExecution = await FlutterBackground.enableBackgroundExecution();
       if (backgroundExecution) {

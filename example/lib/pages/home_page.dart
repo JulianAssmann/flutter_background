@@ -27,7 +27,7 @@ class _MainPageState extends State<MainPage> {
     _tcpBloc =  BlocProvider.of<TcpClientBloc>(context);
 
     _hostEditingController = TextEditingController(text: '10.0.2.2');
-    _portEditingController = TextEditingController(text: '8000');
+    _portEditingController = TextEditingController(text: '5555');
     _chatTextEditingController = TextEditingController(text: '');
 
     _chatTextEditingController.addListener(() {
