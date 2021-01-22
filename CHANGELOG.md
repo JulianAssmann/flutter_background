@@ -27,3 +27,7 @@
 * Fix some typos
 * Address notification icon in the documentation
 * Enhance error handling in example app
+
+## 0.1.5
+
+* Add `isBackgroundExecutionEnabled` property to enable checking the current background execution state

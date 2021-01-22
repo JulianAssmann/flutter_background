@@ -7,6 +7,7 @@ class FlutterBackground {
   static const MethodChannel _channel = MethodChannel('flutter_background');
 
   static bool _isInitialized = false;
+  static bool _isBackgroundExecutionEnabled = false;
 
   /// Initializes the plugin.
   /// May request the necessary permissions from the user in order to run in the background.
@@ -42,7 +43,9 @@ class FlutterBackground {
   /// May throw a [PlatformException].
   static Future<bool> enableBackgroundExecution() async {
     if (_isInitialized) {
-      return await _channel.invokeMethod('enableBackgroundExecution') as bool;
+      final success = await _channel.invokeMethod('enableBackgroundExecution') as bool;
+      _isBackgroundExecutionEnabled = true;
+      return success;
     } else {
       throw Exception(
           'FlutterBackground plugin must be initialized before calling enableBackgroundExecution()');
@@ -57,12 +60,17 @@ class FlutterBackground {
   /// May throw a [PlatformException].
   static Future<void> disableBackgroundExecution() async {
     if (_isInitialized) {
-      return await _channel.invokeMethod('disableBackgroundExecution');
+      final success = await _channel.invokeMethod('disableBackgroundExecution');
+      _isBackgroundExecutionEnabled = false;
+      return success;
     } else {
       throw Exception(
           'FlutterBackground plugin must be initialized before calling disableBackgroundExecution()');
     }
   }
+
+  /// Indicates whether background execution is currently enabled.
+  static bool get isBackgroundExecutionEnabled => _isBackgroundExecutionEnabled;
 
   static int _androidNotificationImportanceToInt(
       AndroidNotificationImportance importance) {
