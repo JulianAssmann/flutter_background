@@ -82,9 +82,15 @@ await FlutterBackground.disbleBackgroundExecution();
 
 you can stop the background execution of the app. You must call `FlutterBackground.initialize()` before calling `FlutterBackground.disbleBackgroundExecution()`.
 
+To check whether background execution is currently enabled, use
+
+```dart
+bool enabled = FlutterBackground.isBackgroundExecutionEnabled
+```
+
 ### Notes
 
-The plugin is currently hard-coded to load the icon for the foreground service notification from a drawable resource with the identifier `ic_launcher`. 
+The plugin is currently hard-coded to load the icon for the foreground service notification from a drawable resource with the identifier `ic_launcher`.
 So if you want to change the logo for the notification, you have to change this resource. I'm planning to allow for custom resource names.
 
 ## Example
