@@ -49,7 +49,7 @@ Before you can use this plugin, you need to initialize it by calling `FlutterBac
 final androidConfig = FlutterBackgroundAndroidConfig(
     notificationTitle: "Title of the notification",
     notificationText: "Text of the notification",
-    importance: AndroidNotificationImportance.Default,
+    notificationImportance: AndroidNotificationImportance.Default,
 );
 bool success = await FlutterBackground.initialize(androidConfig: androidconfig);
 ```
@@ -77,10 +77,10 @@ you can try to get the app running in the background. You must call `FlutterBack
 With
 
 ```dart
-await FlutterBackground.disbleBackgroundExecution();
+await FlutterBackground.disableBackgroundExecution();
 ```
 
-you can stop the background execution of the app. You must call `FlutterBackground.initialize()` before calling `FlutterBackground.disbleBackgroundExecution()`.
+you can stop the background execution of the app. You must call `FlutterBackground.initialize()` before calling `FlutterBackground.disableBackgroundExecution()`.
 
 To check whether background execution is currently enabled, use
 
