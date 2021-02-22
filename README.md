@@ -50,19 +50,31 @@ final androidConfig = FlutterBackgroundAndroidConfig(
     notificationTitle: "Title of the notification",
     notificationText: "Text of the notification",
     notificationImportance: AndroidNotificationImportance.Default,
+    notificationIcon: AndroidResource(name: 'background_icon', defType: 'drawable'), // Default is ic_launcher from folder mipmap
 );
 bool success = await FlutterBackground.initialize(androidConfig: androidconfig);
 ```
 
-In order to function correctly, this plugin needs a few permissions. `FlutterBackground.initialize(...)` will request permissions from the user if necessary.
+The notification icon is for the small icon displayed in the top left of a notification and  must be 
+a drawable Android Resource (see [here](https://developer.android.com/reference/android/app/Notification.Builder#setSmallIcon(int,%20int)) for more). 
+Check out the example app or the 
+[Android documentation for creating notification icons](https://developer.android.com/studio/write/image-asset-studio#create-notification) 
+for more information how to create and store an icon.  
 
-In order to notify the user about upcoming permission requests by the system, you need to know, whether or not the app already has these permissions. You can find out by calling
+In order to function correctly, this plugin needs a few permissions. 
+`FlutterBackground.initialize(...)` will request permissions from the user if necessary. 
+You can call initialize more than one time, so you can call `initalize()` every time before you call 
+`enableBackgroundExecution()` (see below).
+
+In order to notify the user about upcoming permission requests by the system, you need to know, 
+whether or not the app already has these permissions. You can find out by calling
 
 ```dart
 bool hasPermissions = await FlutterBackground.hasPermissions;
 ```
 
-before calling `FlutterBackground.initialize(...)`. If the app already has all necessary permissions, no permission requests will be displayed to the user.
+before calling `FlutterBackground.initialize(...)`. If the app already has all necessary permissions, 
+no permission requests will be displayed to the user.
 
 ### Run app in background
 
@@ -72,7 +84,8 @@ With
 bool success = await FlutterBackground.enableBackgroundExecution();
 ```
 
-you can try to get the app running in the background. You must call `FlutterBackground.initialize()` before calling `FlutterBackground.enableBackgroundExecution()`.
+you can try to get the app running in the background. You must call `FlutterBackground.initialize()` 
+before calling `FlutterBackground.enableBackgroundExecution()`.
 
 With
 
@@ -80,7 +93,8 @@ With
 await FlutterBackground.disableBackgroundExecution();
 ```
 
-you can stop the background execution of the app. You must call `FlutterBackground.initialize()` before calling `FlutterBackground.disableBackgroundExecution()`.
+you can stop the background execution of the app. You must call `FlutterBackground.initialize()` 
+before calling `FlutterBackground.disableBackgroundExecution()`.
 
 To check whether background execution is currently enabled, use
 
@@ -88,23 +102,11 @@ To check whether background execution is currently enabled, use
 bool enabled = FlutterBackground.isBackgroundExecutionEnabled
 ```
 
-### Notes
-
-The plugin is currently hard-coded to load the icon for the foreground service notification from a drawable resource with the identifier `ic_launcher`.
-So if you want to change the logo for the notification, you have to change this resource. I'm planning to allow for custom resource names.
-
 ## Example
 
 The example is a TCP chat app: It can connect to a TCP server and send and receive messages. The user is notified about incoming messages by notifications created with the plugin [flutter_local_notifications](https://pub.dev/packages/flutter_local_notifications).
 
 Using this plugin, the example app can maintain the TCP connection with the server, receiving messages and creating notifications for the user even when in the background.
-
-## ToDo
-
-- Add automated tests
-- On android, add [ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS](https://developer.android.com/reference/android/provider/Settings#ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS) as an option to obtain excemption from battery optimizations, as declaring [REQUEST_IGNORE_BATTERY_OPTIMIZATIONS](https://developer.android.com/reference/android/Manifest.permission.html#REQUEST_IGNORE_BATTERY_OPTIMIZATIONS) might lead to a ban of the app in the Play Store, "unless the core function of the app is adversely affected" (see the note [here](https://developer.android.com/training/monitoring-device-state/doze-standby.html#support_for_other_use_cases))
-- On android, allow for other notification icon resource names than `ic_launcher`
-- Explore options of background execution for iOS (help needed, I don't have any Mac/iOS devices or experience with programming for them)
 
 ## Maintainer
 

@@ -14,7 +14,7 @@ Future<void> startServer() async {
           'New TCP client ${socket.address.address}:${socket.port} connected.');
 
       var totalSeconds = 0;
-      final timer = Timer.periodic(Duration(seconds: 5), (timer) {
+      final timer = Timer.periodic(Duration(seconds: 60), (timer) {
         totalSeconds += timer.tick;
         socket.add(totalSeconds.toString().codeUnits);
       });

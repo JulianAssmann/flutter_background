@@ -30,4 +30,10 @@
 
 ## 0.1.5
 
-* Add `isBackgroundExecutionEnabled` property to enable checking the current background execution state
+* Add `isBackgroundExecutionEnabled` property to enable checking the current background execution state.
+
+## 0.1.6
+
+* Improve initialize method on Android
+* Add ability to specify custom notification icons
+* Update documentation accordingly

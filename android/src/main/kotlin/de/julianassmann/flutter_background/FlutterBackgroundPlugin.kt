@@ -38,6 +38,20 @@ class FlutterBackgroundPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     var notificationText: String? = "Keeps the flutter app running in the background"
     @JvmStatic
     var notificationImportance: Int? = NotificationCompat.PRIORITY_DEFAULT
+
+    @JvmStatic
+    var notificationIconName: String? = "ic_launcher"
+    @JvmStatic
+    var notificationIconDefType: String? = "mipmap"
+  }
+
+  private fun isValidResource(context: Context, name: String, defType: String, result: Result, errorCode: String): Boolean {
+    val resourceId = context.getResources().getIdentifier(name, defType, context.getPackageName())
+    if (resourceId == 0) {
+      result.error("ResourceError", "The resource $defType/$name could not be found. Please make sure it has been added as a resource to your Android head project.", null)
+      return false
+    }
+    return true
   }
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
@@ -58,23 +72,34 @@ class FlutterBackgroundPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
         val title = call.argument<String>("android.notificationTitle")
         val text = call.argument<String>("android.notificationText")
         val importance = call.argument<Int>("android.notificationImportance")
+        val iconName = call.argument<String>("android.notificationIconName")
+        val iconDefType = call.argument<String>("android.notificationIconDefType")
 
         // Set static values so the IsolateHolderService can use them later on to configure the notification
-        notificationImportance = importance ?: NotificationCompat.PRIORITY_DEFAULT
-        notificationTitle = title ?: "flutter_background foreground service"
-        notificationText = text ?: "Keeps the flutter app running in the background"
+        notificationImportance = importance ?: notificationImportance
+        notificationTitle = title ?: notificationTitle
+        notificationText = text ?: text
+        notificationIconName = iconName ?: notificationIconName
+        notificationIconDefType = iconDefType ?: notificationIconDefType
 
-        // Ensure all the necessary permissions are granted, otherwise request them
+        if (permissionHandler!!.isWakeLockPermissionGranted() && permissionHandler!!.isIgnoringBatteryOptimizations()) {
+          result.success(true)
+          return
+        }
+
+        // Ensure wake lock permissions are granted
         if (!permissionHandler!!.isWakeLockPermissionGranted()) {
-          result.error("PermissionError","Please add the WAKE_LOCK permission to the AndroidManifest.xml in order to use background_sockets.", "")
-        } else if (!permissionHandler!!.isIgnoringBatteryOptimizations()) {
+          result.error("PermissionError", "Please add the WAKE_LOCK permission to the AndroidManifest.xml in order to use background_sockets.", "")
+          return
+        }
+
+        // Ensure ignoring battery optimizations is enabled
+        if (!permissionHandler!!.isIgnoringBatteryOptimizations()) {
           if (activity != null) {
             permissionHandler!!.requestBatteryOptimizationsOff(result, activity!!)
           } else {
             result.error("NoActivityError", "The plugin is not attached to an activity", "The plugin is not attached to an activity. This is required in order to request battery optimization to be off.")
           }
-        } else {
-          result.success(true)
         }
       }
       "enableBackgroundExecution" -> {

@@ -7,11 +7,13 @@ abstract class TcpClientEvent {}
 class Connect extends TcpClientEvent {
   /// The host of the server to connect to.
   final dynamic host;
+
   /// The port of the server to connect to.
   final int port;
 
   Connect({@required this.host, @required this.port})
-    : assert(host != null), assert(port != null);
+      : assert(host != null),
+        assert(port != null);
 
   @override
   String toString() => '''Connect {

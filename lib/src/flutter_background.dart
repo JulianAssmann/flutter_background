@@ -23,7 +23,9 @@ class FlutterBackground {
       'android.notificationText': androidConfig.notificationText,
       'android.notificationImportance': _androidNotificationImportanceToInt(
           androidConfig.notificationImportance),
-    }) as bool;
+      'android.notificationIconName': androidConfig.notificationIcon.name,
+      'android.notificationIconDefType': androidConfig.notificationIcon.defType,
+    });
     return _isInitialized;
   }
 
@@ -43,7 +45,8 @@ class FlutterBackground {
   /// May throw a [PlatformException].
   static Future<bool> enableBackgroundExecution() async {
     if (_isInitialized) {
-      final success = await _channel.invokeMethod('enableBackgroundExecution') as bool;
+      final success =
+          await _channel.invokeMethod('enableBackgroundExecution') as bool;
       _isBackgroundExecutionEnabled = true;
       return success;
     } else {
