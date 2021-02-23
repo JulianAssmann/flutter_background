@@ -12,9 +12,7 @@ class TcpClientState {
 
   factory TcpClientState.initial() {
     return TcpClientState(
-      connectionState: SocketConnectionState.None, 
-      messages: <Message>[]
-    );
+        connectionState: SocketConnectionState.None, messages: <Message>[]);
   }
 
   TcpClientState copywith({

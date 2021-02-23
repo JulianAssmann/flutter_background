@@ -5,11 +5,12 @@ import 'bloc/tcp_client_bloc/tcp_client_bloc.dart';
 
 class BackgroundSocketsExampleApp extends StatefulWidget {
   @override
-  _BackgroundSocketsExampleAppState createState() => _BackgroundSocketsExampleAppState();
+  _BackgroundSocketsExampleAppState createState() =>
+      _BackgroundSocketsExampleAppState();
 }
 
-class _BackgroundSocketsExampleAppState extends State<BackgroundSocketsExampleApp> {
-
+class _BackgroundSocketsExampleAppState
+    extends State<BackgroundSocketsExampleApp> {
   @override
   void initState() {
     super.initState();

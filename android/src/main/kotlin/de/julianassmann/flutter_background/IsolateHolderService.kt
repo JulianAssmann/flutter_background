@@ -53,7 +53,7 @@ class IsolateHolderService : Service() {
             notificationManager.createNotificationChannel(channel)
         }
 
-        val imageId = resources.getIdentifier("ic_launcher", "mipmap", packageName)
+        val imageId = resources.getIdentifier(FlutterBackgroundPlugin.notificationIconName, FlutterBackgroundPlugin.notificationIconDefType, packageName)
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(FlutterBackgroundPlugin.notificationTitle)
                 .setContentText(FlutterBackgroundPlugin.notificationText)

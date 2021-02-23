@@ -3,20 +3,19 @@ import 'dart:typed_data';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 /// The service used to display notifications and handle callbacks when the user taps on the notification.
-/// 
+///
 /// This is a singleton. Just call NotificationService() to get the singleton.
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
+
   factory NotificationService() => _instance;
 
   FlutterLocalNotificationsPlugin plugin;
 
   NotificationService._internal() {
-
     final initializationSettings = InitializationSettings(
-      AndroidInitializationSettings('@mipmap/ic_launcher'),
-      IOSInitializationSettings()
-    );
+        AndroidInitializationSettings('@mipmap/ic_launcher'),
+        IOSInitializationSettings());
 
     plugin = FlutterLocalNotificationsPlugin();
     plugin.initialize(initializationSettings);
@@ -33,25 +32,20 @@ class NotificationService {
     AndroidNotificationDetails androidNotificationDetails;
 
     final channelName = 'Text messages';
-    
-    androidNotificationDetails = AndroidNotificationDetails(
-      channelName, channelName, channelName,
-      importance: Importance.Max,
-      priority: Priority.High,
 
-      vibrationPattern: vibration ? vibrationPattern : null,
-      enableVibration: vibration);
-  
+    androidNotificationDetails = AndroidNotificationDetails(
+        channelName, channelName, channelName,
+        importance: Importance.Max,
+        priority: Priority.High,
+        vibrationPattern: vibration ? vibrationPattern : null,
+        enableVibration: vibration);
+
     var iOSPlatformChannelSpecifics = IOSNotificationDetails();
     var notificationDetails = NotificationDetails(
         androidNotificationDetails, iOSPlatformChannelSpecifics);
-    
+
     try {
-      await plugin.show(
-          0, 
-          msg, 
-          msg,
-          notificationDetails);
+      await plugin.show(0, msg, msg, notificationDetails);
     } catch (ex) {
       print(ex);
     }

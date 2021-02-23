@@ -24,16 +24,14 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
-    _tcpBloc =  BlocProvider.of<TcpClientBloc>(context);
+    _tcpBloc = BlocProvider.of<TcpClientBloc>(context);
 
     _hostEditingController = TextEditingController(text: '10.0.2.2');
     _portEditingController = TextEditingController(text: '5555');
     _chatTextEditingController = TextEditingController(text: '');
 
     _chatTextEditingController.addListener(() {
-      setState(() {
-        
-      });
+      setState(() {});
     });
   }
 
@@ -46,107 +44,105 @@ class _MainPageState extends State<MainPage> {
           IconButton(
             icon: Icon(Icons.info_outline),
             onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (BuildContext context) {
-                  return AboutPage();
-                }
-              ));
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (BuildContext context) {
+                return AboutPage();
+              }));
             },
           )
         ],
       ),
       body: BlocConsumer<TcpClientBloc, TcpClientState>(
-        cubit: _tcpBloc,
-        listener: (BuildContext context, TcpClientState state) { 
-          if (state.connectionState == SocketConnectionState.Connected) {
-            Scaffold.of(context)
-              ..hideCurrentSnackBar();
-          } else if (state.connectionState == SocketConnectionState.Failed) {
-            Scaffold.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(
-                SnackBar(
-                  content: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [Text('Connection failed'), Icon(Icons.error)],
+          cubit: _tcpBloc,
+          listener: (BuildContext context, TcpClientState state) {
+            if (state.connectionState == SocketConnectionState.Connected) {
+              Scaffold.of(context)..hideCurrentSnackBar();
+            } else if (state.connectionState == SocketConnectionState.Failed) {
+              Scaffold.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  SnackBar(
+                    content: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [Text('Connection failed'), Icon(Icons.error)],
+                    ),
+                    backgroundColor: Colors.red,
                   ),
-                  backgroundColor: Colors.red,
+                );
+            } else {
+              return Container();
+            }
+          },
+          builder: (context, state) {
+            if (state.connectionState == SocketConnectionState.None ||
+                state.connectionState == SocketConnectionState.Failed) {
+              return Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8.0),
+                child: ListView(
+                  children: [
+                    TextFormField(
+                      controller: _hostEditingController,
+                      autovalidateMode: AutovalidateMode.always,
+                      validator: (str) =>
+                          isValidHost(str) ? null : 'Invalid hostname',
+                      decoration: InputDecoration(
+                        helperText:
+                            'The ip address or hostname of the TCP server',
+                        hintText: 'Enter the address here, e.g. 10.0.2.2',
+                      ),
+                    ),
+                    TextFormField(
+                      controller: _portEditingController,
+                      autovalidateMode: AutovalidateMode.always,
+                      validator: (str) =>
+                          isValidPort(str) ? null : 'Invalid port',
+                      decoration: InputDecoration(
+                        helperText: 'The port the TCP server is listening on',
+                        hintText: 'Enter the port here, e. g. 8000',
+                      ),
+                    ),
+                    RaisedButton(
+                      child: Text('Connect'),
+                      onPressed: isValidHost(_hostEditingController.text) &&
+                              isValidPort(_portEditingController.text)
+                          ? () {
+                              _tcpBloc.add(Connect(
+                                  host: _hostEditingController.text,
+                                  port:
+                                      int.parse(_portEditingController.text)));
+                            }
+                          : null,
+                    )
+                  ],
                 ),
               );
-          } else {
-            return Container();
-          }
-        },
-        builder: (context, state) {
-          if (state.connectionState == SocketConnectionState.None || state.connectionState == SocketConnectionState.Failed) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8.0),
-              child: ListView(
-                children: [
-                  TextFormField(
-                    controller: _hostEditingController,
-                    autovalidateMode: AutovalidateMode.always,
-                    validator: (str) => isValidHost(str) ? null : 'Invalid hostname',
-                    decoration: InputDecoration(
-                      helperText: 'The ip address or hostname of the TCP server',
-                      hintText: 'Enter the address here, e.g. 10.0.2.2',
-                    ),
-                  ),
-                  TextFormField(
-                    controller: _portEditingController,
-                    autovalidateMode: AutovalidateMode.always,
-                    validator: (str) => isValidPort(str) ? null : 'Invalid port',
-                    decoration: InputDecoration(
-                      helperText: 'The port the TCP server is listening on',
-                      hintText: 'Enter the port here, e. g. 8000',
-                    ),
-                  ),
-                  RaisedButton(
-                    child: Text('Connect'),
-                    onPressed: isValidHost(_hostEditingController.text) && isValidPort(_portEditingController.text)
-                      ? () {
-                        _tcpBloc.add(
-                          Connect(
-                            host: _hostEditingController.text, 
-                            port: int.parse(_portEditingController.text)
-                          )
-                        );
-                      }
-                      : null,
-                  )
-                ],
-              ),
-            );
-          } else if (state.connectionState == SocketConnectionState.Connecting) {
-            return Center(
-              child: Column(
-                children: <Widget>[
-                  CircularProgressIndicator(),
-                  Text('Connecting...'),
-                  RaisedButton(
-                    child: Text('Abort'),
-                    onPressed: () {
-                      _tcpBloc.add(Disconnect());
-                    },
-                  )
-                ],
-              ),
-            );
-          } else if (state.connectionState == SocketConnectionState.Connected) {
-            return Column(
-              children: [
+            } else if (state.connectionState ==
+                SocketConnectionState.Connecting) {
+              return Center(
+                child: Column(
+                  children: <Widget>[
+                    CircularProgressIndicator(),
+                    Text('Connecting...'),
+                  ],
+                ),
+              );
+            } else if (state.connectionState ==
+                SocketConnectionState.Connected) {
+              return Column(children: [
                 Expanded(
                   child: Container(
                     child: ListView.builder(
-                      itemCount: state.messages.length,
-                      itemBuilder: (context, idx) {
-                        final m = state.messages[idx];
-                        return Bubble(
-                          child: Text(m.message),
-                          alignment: m.origin == MessageOrigin.Client ? Alignment.centerRight : Alignment.centerLeft,
-                        );
-                      }
-                    ),
+                        itemCount: state.messages.length,
+                        itemBuilder: (context, idx) {
+                          final m = state.messages[idx];
+                          return Bubble(
+                            child: Text(m.message),
+                            alignment: m.origin == MessageOrigin.Client
+                                ? Alignment.centerRight
+                                : Alignment.centerLeft,
+                          );
+                        }),
                   ),
                 ),
                 Padding(
@@ -155,20 +151,19 @@ class _MainPageState extends State<MainPage> {
                     children: [
                       Expanded(
                         child: TextField(
-                          decoration: InputDecoration(
-                            hintText: 'Message'
-                          ),
+                          decoration: InputDecoration(hintText: 'Message'),
                           controller: _chatTextEditingController,
                         ),
                       ),
                       IconButton(
                         icon: Icon(Icons.send),
                         onPressed: _chatTextEditingController.text.isEmpty
-                          ? null
-                          : () {
-                            _tcpBloc.add(SendMessage(message: _chatTextEditingController.text));
-                            _chatTextEditingController.text = '';
-                          },
+                            ? null
+                            : () {
+                                _tcpBloc.add(SendMessage(
+                                    message: _chatTextEditingController.text));
+                                _chatTextEditingController.text = '';
+                              },
                       )
                     ],
                   ),
@@ -178,14 +173,12 @@ class _MainPageState extends State<MainPage> {
                   onPressed: () {
                     _tcpBloc.add(Disconnect());
                   },
-                ),                
-              ]
-            );
-          } else {
-            return Container();
-          }
-        }
-      ),
+                ),
+              ]);
+            } else {
+              return Container();
+            }
+          }),
     );
   }
 }
