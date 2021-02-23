@@ -55,26 +55,23 @@ final androidConfig = FlutterBackgroundAndroidConfig(
 bool success = await FlutterBackground.initialize(androidConfig: androidconfig);
 ```
 
-The notification icon is for the small icon displayed in the top left of a notification and  must be 
-a drawable Android Resource (see [here](https://developer.android.com/reference/android/app/Notification.Builder#setSmallIcon(int,%20int)) for more). 
-Check out the example app or the 
-[Android documentation for creating notification icons](https://developer.android.com/studio/write/image-asset-studio#create-notification) 
-for more information how to create and store an icon.  
+This results in the following notification (where `background_icon` is a drawable resource, see example app):
+![The foreground notification created by the code above.](./images/notification.png "Foreground notification created by the code above.")
 
-In order to function correctly, this plugin needs a few permissions. 
-`FlutterBackground.initialize(...)` will request permissions from the user if necessary. 
-You can call initialize more than one time, so you can call `initalize()` every time before you call 
-`enableBackgroundExecution()` (see below).
+The notification icon is for the small icon displayed in the top left of a notification and  must be a drawable Android Resource (see [here](https://developer.android.com/reference/android/app/Notification.Builder#setSmallIcon(int,%20int)) for more).
+Check out the example app or the [Android documentation for creating notification icons](https://developer.android.com/studio/write/image-asset-studio#create-notification) for more information how to create and store an icon.  
 
-In order to notify the user about upcoming permission requests by the system, you need to know, 
-whether or not the app already has these permissions. You can find out by calling
+In order to function correctly, this plugin needs a few permissions.
+`FlutterBackground.initialize(...)` will request permissions from the user if necessary.
+You can call initialize more than one time, so you can call `initalize()` every time before you call `enableBackgroundExecution()` (see below).
+
+In order to notify the user about upcoming permission requests by the system, you need to know, whether or not the app already has these permissions. You can find out by calling
 
 ```dart
 bool hasPermissions = await FlutterBackground.hasPermissions;
 ```
 
-before calling `FlutterBackground.initialize(...)`. If the app already has all necessary permissions, 
-no permission requests will be displayed to the user.
+before calling `FlutterBackground.initialize(...)`. If the app already has all necessary permissions, no permission requests will be displayed to the user.
 
 ### Run app in background
 
@@ -84,8 +81,7 @@ With
 bool success = await FlutterBackground.enableBackgroundExecution();
 ```
 
-you can try to get the app running in the background. You must call `FlutterBackground.initialize()` 
-before calling `FlutterBackground.enableBackgroundExecution()`.
+you can try to get the app running in the background. You must call `FlutterBackground.initialize()` before calling `FlutterBackground.enableBackgroundExecution()`.
 
 With
 
@@ -93,8 +89,7 @@ With
 await FlutterBackground.disableBackgroundExecution();
 ```
 
-you can stop the background execution of the app. You must call `FlutterBackground.initialize()` 
-before calling `FlutterBackground.disableBackgroundExecution()`.
+you can stop the background execution of the app. You must call `FlutterBackground.initialize()` before calling `FlutterBackground.disableBackgroundExecution()`.
 
 To check whether background execution is currently enabled, use
 
