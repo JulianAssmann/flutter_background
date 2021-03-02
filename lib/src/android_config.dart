@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 /// Represents the importance of an android notification as described
 /// under https://developer.android.com/training/notify-user/channels#importance.
 enum AndroidNotificationImportance {
@@ -19,8 +17,7 @@ class AndroidResource {
   // Optional default resource type to find, if "type/" is not included in the name. Can be null to require an explicit type.
   final String defType;
 
-  const AndroidResource({@required this.name, this.defType = 'drawable'})
-      : assert(name != null);
+  const AndroidResource({required this.name, this.defType = 'drawable'});
 }
 
 /// Android configuration for the [FlutterBackground] plugin.
@@ -51,8 +48,5 @@ class FlutterBackgroundAndroidConfig {
       this.notificationText = 'Notification text',
       this.notificationImportance = AndroidNotificationImportance.Default,
       this.notificationIcon =
-          const AndroidResource(name: 'ic_launcher', defType: 'mipmap')})
-      : assert(notificationTitle != null),
-        assert(notificationText != null),
-        assert(notificationImportance != null);
+          const AndroidResource(name: 'ic_launcher', defType: 'mipmap')});
 }
