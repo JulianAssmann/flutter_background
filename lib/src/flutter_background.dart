@@ -19,13 +19,15 @@ class FlutterBackground {
       {FlutterBackgroundAndroidConfig androidConfig =
           const FlutterBackgroundAndroidConfig()}) async {
     _isInitialized = await _channel.invokeMethod<bool>('initialize', {
-      'android.notificationTitle': androidConfig.notificationTitle,
-      'android.notificationText': androidConfig.notificationText,
-      'android.notificationImportance': _androidNotificationImportanceToInt(
-          androidConfig.notificationImportance),
-      'android.notificationIconName': androidConfig.notificationIcon.name,
-      'android.notificationIconDefType': androidConfig.notificationIcon.defType,
-    }) == true;
+          'android.notificationTitle': androidConfig.notificationTitle,
+          'android.notificationText': androidConfig.notificationText,
+          'android.notificationImportance': _androidNotificationImportanceToInt(
+              androidConfig.notificationImportance),
+          'android.notificationIconName': androidConfig.notificationIcon.name,
+          'android.notificationIconDefType':
+              androidConfig.notificationIcon.defType,
+        }) ==
+        true;
     return _isInitialized;
   }
 
@@ -63,7 +65,8 @@ class FlutterBackground {
   /// May throw a [PlatformException].
   static Future<bool> disableBackgroundExecution() async {
     if (_isInitialized) {
-      final success = await _channel.invokeMethod<bool>('disableBackgroundExecution');
+      final success =
+          await _channel.invokeMethod<bool>('disableBackgroundExecution');
       _isBackgroundExecutionEnabled = false;
       return success == true;
     } else {

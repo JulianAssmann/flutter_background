@@ -55,11 +55,15 @@ final androidConfig = FlutterBackgroundAndroidConfig(
 bool success = await FlutterBackground.initialize(androidConfig: androidconfig);
 ```
 
-This results in the following notification (where `background_icon` is a drawable resource, see example app):
+This ensures all permissions are granted and requests them if necessary. It also configures the
+foreground notification. The configuration above results in the foreground notification shown below when
+running `FlutterBackground.enableBackgroundExecution()`.
+
 ![The foreground notification created by the code above.](./images/notification.png "Foreground notification created by the code above.")
 
 The notification icon is for the small icon displayed in the top left of a notification and  must be a drawable Android Resource (see [here](https://developer.android.com/reference/android/app/Notification.Builder#setSmallIcon(int,%20int)) for more).
-Check out the example app or the [Android documentation for creating notification icons](https://developer.android.com/studio/write/image-asset-studio#create-notification) for more information how to create and store an icon.  
+In this example, `background_icon` is a drawable resource in the `drawable` folders (see the example app).
+For more information check out the [Android documentation for creating notification icons](https://developer.android.com/studio/write/image-asset-studio#create-notification) for more information how to create and store an icon.  
 
 In order to function correctly, this plugin needs a few permissions.
 `FlutterBackground.initialize(...)` will request permissions from the user if necessary.
