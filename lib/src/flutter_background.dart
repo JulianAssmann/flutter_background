@@ -18,14 +18,14 @@ class FlutterBackground {
   static Future<bool> initialize(
       {FlutterBackgroundAndroidConfig androidConfig =
           const FlutterBackgroundAndroidConfig()}) async {
-    _isInitialized = await _channel.invokeMethod('initialize', {
+    _isInitialized = await _channel.invokeMethod<bool>('initialize', {
       'android.notificationTitle': androidConfig.notificationTitle,
       'android.notificationText': androidConfig.notificationText,
       'android.notificationImportance': _androidNotificationImportanceToInt(
           androidConfig.notificationImportance),
       'android.notificationIconName': androidConfig.notificationIcon.name,
       'android.notificationIconDefType': androidConfig.notificationIcon.defType,
-    });
+    }) == true;
     return _isInitialized;
   }
 
@@ -34,7 +34,7 @@ class FlutterBackground {
   /// Returns true, if the user has granted the permission, otherwise false.
   /// May throw a [PlatformException].
   static Future<bool> get hasPermissions async {
-    return await _channel.invokeMethod('hasPermissions') as bool;
+    return await _channel.invokeMethod<bool>('hasPermissions') == true;
   }
 
   /// Enables the execution of the flutter app in the background.
@@ -46,9 +46,9 @@ class FlutterBackground {
   static Future<bool> enableBackgroundExecution() async {
     if (_isInitialized) {
       final success =
-          await _channel.invokeMethod('enableBackgroundExecution') as bool;
+          await _channel.invokeMethod<bool>('enableBackgroundExecution');
       _isBackgroundExecutionEnabled = true;
-      return success;
+      return success == true;
     } else {
       throw Exception(
           'FlutterBackground plugin must be initialized before calling enableBackgroundExecution()');
@@ -61,11 +61,11 @@ class FlutterBackground {
   /// Returns true if successful, otherwise false.
   /// Throws an [Exception] if the plugin is not initialized by calling [FlutterBackground.initialize()] first.
   /// May throw a [PlatformException].
-  static Future<void> disableBackgroundExecution() async {
+  static Future<bool> disableBackgroundExecution() async {
     if (_isInitialized) {
-      final success = await _channel.invokeMethod('disableBackgroundExecution');
+      final success = await _channel.invokeMethod<bool>('disableBackgroundExecution');
       _isBackgroundExecutionEnabled = false;
-      return success;
+      return success == true;
     } else {
       throw Exception(
           'FlutterBackground plugin must be initialized before calling disableBackgroundExecution()');
