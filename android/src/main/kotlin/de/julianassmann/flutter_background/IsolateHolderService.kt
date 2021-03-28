@@ -83,8 +83,13 @@ class IsolateHolderService : Service() {
         super.onCreate()
     }
 
+<<<<<<< HEAD
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int) : Int {
         if (intent?.action == ACTION_SHUTDOWN) {
+=======
+    override fun onStartCommand(intent: Intent!, flags: Int, startId: Int) : Int {
+        if (intent != null && ((intent.action == ACTION_SHUTDOWN)) {
+>>>>>>> df13754 (Fixed IllegalArgumentException caused by null Intent parameter)
             (getSystemService(Context.POWER_SERVICE) as PowerManager).run {
                 newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, WAKELOCK_TAG).apply {
                     if (isHeld) {
