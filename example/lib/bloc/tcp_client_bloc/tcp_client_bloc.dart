@@ -5,14 +5,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_background/flutter_background.dart';
 import 'package:flutter_background_example/models/message.dart';
 import 'package:flutter_background_example/models/socket_connection_state.dart';
-import 'package:flutter_background_example/utils/notification_service.dart';
+import '../../utils/notification_service.dart';
 
 part 'tcp_client_event.dart';
 part 'tcp_client_state.dart';
 
 class TcpClientBloc extends Bloc<TcpClientEvent, TcpClientState> {
-  Socket _socket;
-  StreamSubscription _socketStreamSub;
+  Socket? _socket;
+  StreamSubscription? _socketStreamSub;
 
   TcpClientBloc() : super(TcpClientState.initial());
 
@@ -62,8 +62,7 @@ class TcpClientBloc extends Bloc<TcpClientEvent, TcpClientState> {
       if (backgroundExecution) {
         try {
           _socket = await Socket.connect(event.host, event.port);
-
-          _socketStreamSub = _socket.asBroadcastStream().listen((event) {
+          _socketStreamSub = _socket!.asBroadcastStream().listen((event) {
             add(MessageReceived(
                 message: Message(
               message: String.fromCharCodes(event),
@@ -71,7 +70,7 @@ class TcpClientBloc extends Bloc<TcpClientEvent, TcpClientState> {
               origin: MessageOrigin.Server,
             )));
           });
-          _socket.handleError(() {
+          _socket!.handleError(() {
             add(ErrorOccured());
           });
 
@@ -104,7 +103,7 @@ class TcpClientBloc extends Bloc<TcpClientEvent, TcpClientState> {
         timestamp: DateTime.now(),
         origin: MessageOrigin.Client,
       ));
-      _socket.write(event.message);
+      _socket!.write(event.message);
     }
   }
 

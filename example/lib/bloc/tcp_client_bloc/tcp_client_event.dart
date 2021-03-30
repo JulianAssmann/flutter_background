@@ -11,9 +11,7 @@ class Connect extends TcpClientEvent {
   /// The port of the server to connect to.
   final int port;
 
-  Connect({@required this.host, @required this.port})
-      : assert(host != null),
-        assert(port != null);
+  Connect({required this.host, required this.port});
 
   @override
   String toString() => '''Connect {
@@ -38,7 +36,7 @@ class ErrorOccured extends TcpClientEvent {
 class MessageReceived extends TcpClientEvent {
   final Message message;
 
-  MessageReceived({@required this.message});
+  MessageReceived({required this.message});
 
   @override
   String toString() => '''MessageReceived {
@@ -51,7 +49,7 @@ class SendMessage extends TcpClientEvent {
   /// The message to be sent to the TCP server.
   final String message;
 
-  SendMessage({@required this.message});
+  SendMessage({required this.message});
 
   @override
   String toString() => 'SendMessage { }';

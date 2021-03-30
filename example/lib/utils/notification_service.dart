@@ -10,12 +10,12 @@ class NotificationService {
 
   factory NotificationService() => _instance;
 
-  FlutterLocalNotificationsPlugin plugin;
+  late FlutterLocalNotificationsPlugin plugin;
 
   NotificationService._internal() {
     final initializationSettings = InitializationSettings(
-        AndroidInitializationSettings('@mipmap/ic_launcher'),
-        IOSInitializationSettings());
+        android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+        iOS: IOSInitializationSettings());
 
     plugin = FlutterLocalNotificationsPlugin();
     plugin.initialize(initializationSettings);
@@ -35,14 +35,15 @@ class NotificationService {
 
     androidNotificationDetails = AndroidNotificationDetails(
         channelName, channelName, channelName,
-        importance: Importance.Max,
-        priority: Priority.High,
+        importance: Importance.max,
+        priority: Priority.high,
         vibrationPattern: vibration ? vibrationPattern : null,
         enableVibration: vibration);
 
     var iOSPlatformChannelSpecifics = IOSNotificationDetails();
     var notificationDetails = NotificationDetails(
-        androidNotificationDetails, iOSPlatformChannelSpecifics);
+        android: androidNotificationDetails, 
+        iOS: iOSPlatformChannelSpecifics);
 
     try {
       await plugin.show(0, msg, msg, notificationDetails);

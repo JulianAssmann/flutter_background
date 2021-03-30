@@ -6,8 +6,8 @@ class TcpClientState {
   final List<Message> messages;
 
   TcpClientState({
-    @required this.connectionState,
-    @required this.messages,
+    required this.connectionState,
+    required this.messages,
   });
 
   factory TcpClientState.initial() {
@@ -16,8 +16,8 @@ class TcpClientState {
   }
 
   TcpClientState copywith({
-    SocketConnectionState connectionState,
-    List<Message> messages,
+    SocketConnectionState? connectionState,
+    List<Message>? messages,
   }) {
     return TcpClientState(
       connectionState: connectionState ?? this.connectionState,
@@ -25,7 +25,7 @@ class TcpClientState {
     );
   }
 
-  TcpClientState copyWithNewMessage({@required Message message}) {
+  TcpClientState copyWithNewMessage({required Message message}) {
     return TcpClientState(
       connectionState: connectionState,
       messages: List.from(messages)..add(message),

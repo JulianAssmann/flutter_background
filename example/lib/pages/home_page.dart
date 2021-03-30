@@ -3,23 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_background_example/bloc/tcp_client_bloc/tcp_client_bloc.dart';
 import 'package:flutter_background_example/models/message.dart';
 import 'package:flutter_background_example/models/socket_connection_state.dart';
-import 'package:flutter_background_example/utils/validators.dart';
+import '../utils/validators.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'about_page.dart';
 
 class MainPage extends StatefulWidget {
-  const MainPage({Key key}) : super(key: key);
+  const MainPage({Key? key}) : super(key: key);
 
   @override
   _MainPageState createState() => _MainPageState();
 }
 
 class _MainPageState extends State<MainPage> {
-  TcpClientBloc _tcpBloc;
-  TextEditingController _hostEditingController;
-  TextEditingController _portEditingController;
-  TextEditingController _chatTextEditingController;
+  late TcpClientBloc _tcpBloc;
+  TextEditingController? _hostEditingController;
+  TextEditingController? _portEditingController;
+  TextEditingController? _chatTextEditingController;
 
   @override
   void initState() {
@@ -30,7 +30,7 @@ class _MainPageState extends State<MainPage> {
     _portEditingController = TextEditingController(text: '5555');
     _chatTextEditingController = TextEditingController(text: '');
 
-    _chatTextEditingController.addListener(() {
+    _chatTextEditingController!.addListener(() {
       setState(() {});
     });
   }
@@ -53,12 +53,11 @@ class _MainPageState extends State<MainPage> {
         ],
       ),
       body: BlocConsumer<TcpClientBloc, TcpClientState>(
-          cubit: _tcpBloc,
           listener: (BuildContext context, TcpClientState state) {
             if (state.connectionState == SocketConnectionState.Connected) {
-              Scaffold.of(context)..hideCurrentSnackBar();
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
             } else if (state.connectionState == SocketConnectionState.Failed) {
-              Scaffold.of(context)
+              ScaffoldMessenger.of(context)
                 ..hideCurrentSnackBar()
                 ..showSnackBar(
                   SnackBar(
@@ -70,7 +69,6 @@ class _MainPageState extends State<MainPage> {
                   ),
                 );
             } else {
-              return Container();
             }
           },
           builder: (context, state) {
@@ -102,15 +100,15 @@ class _MainPageState extends State<MainPage> {
                         hintText: 'Enter the port here, e. g. 8000',
                       ),
                     ),
-                    RaisedButton(
+                    ElevatedButton(
                       child: Text('Connect'),
-                      onPressed: isValidHost(_hostEditingController.text) &&
-                              isValidPort(_portEditingController.text)
+                      onPressed: isValidHost(_hostEditingController!.text) &&
+                              isValidPort(_portEditingController!.text)
                           ? () {
                               _tcpBloc.add(Connect(
-                                  host: _hostEditingController.text,
+                                  host: _hostEditingController!.text,
                                   port:
-                                      int.parse(_portEditingController.text)));
+                                      int.parse(_portEditingController!.text)));
                             }
                           : null,
                     )
@@ -157,18 +155,18 @@ class _MainPageState extends State<MainPage> {
                       ),
                       IconButton(
                         icon: Icon(Icons.send),
-                        onPressed: _chatTextEditingController.text.isEmpty
+                        onPressed: _chatTextEditingController!.text.isEmpty
                             ? null
                             : () {
                                 _tcpBloc.add(SendMessage(
-                                    message: _chatTextEditingController.text));
-                                _chatTextEditingController.text = '';
+                                    message: _chatTextEditingController!.text));
+                                _chatTextEditingController!.text = '';
                               },
                       )
                     ],
                   ),
                 ),
-                RaisedButton(
+                ElevatedButton(
                   child: Text('Disconnect'),
                   onPressed: () {
                     _tcpBloc.add(Disconnect());
