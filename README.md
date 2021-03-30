@@ -47,8 +47,8 @@ Before you can use this plugin, you need to initialize it by calling `FlutterBac
 
 ```dart
 final androidConfig = FlutterBackgroundAndroidConfig(
-    notificationTitle: "Title of the notification",
-    notificationText: "Text of the notification",
+    notificationTitle: "flutter_background example app",
+    notificationText: "Background notification for keeping the example app running in the background",
     notificationImportance: AndroidNotificationImportance.Default,
     notificationIcon: AndroidResource(name: 'background_icon', defType: 'drawable'), // Default is ic_launcher from folder mipmap
 );
