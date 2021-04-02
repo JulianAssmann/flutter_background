@@ -72,7 +72,7 @@ class IsolateHolderService : Service() {
         super.onCreate()
     }
 
-    override fun onStartCommand(intent: Intent!, flags: Int, startId: Int) : Int {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int) : Int {
         if ((intent != null) && (intent.action == ACTION_SHUTDOWN)) {
             (getSystemService(Context.POWER_SERVICE) as PowerManager).run {
                 newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, WAKELOCK_TAG).apply {
