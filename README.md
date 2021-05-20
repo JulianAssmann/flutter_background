@@ -52,7 +52,7 @@ final androidConfig = FlutterBackgroundAndroidConfig(
     notificationImportance: AndroidNotificationImportance.Default,
     notificationIcon: AndroidResource(name: 'background_icon', defType: 'drawable'), // Default is ic_launcher from folder mipmap
 );
-bool success = await FlutterBackground.initialize(androidConfig: androidconfig);
+bool success = await FlutterBackground.initialize(androidConfig: androidConfig);
 ```
 
 This ensures all permissions are granted and requests them if necessary. It also configures the
