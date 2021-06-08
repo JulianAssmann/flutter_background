@@ -3,9 +3,11 @@ package de.julianassmann.flutter_background
 import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent;
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager;
 import android.os.Build
 import android.os.IBinder
 import android.os.PowerManager
@@ -40,6 +42,14 @@ class IsolateHolderService : Service() {
 
     @SuppressLint("WakelockTimeout")
     override fun onCreate() {
+
+        val pm = getApplicationContext().getPackageManager()
+        val notificationIntent  =
+            pm.getLaunchIntentForPackage(getApplicationContext().getPackageName())
+        val pendingIntent  = PendingIntent.getActivity(
+            this, 0,
+            notificationIntent, 0
+        )
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                     CHANNEL_ID,
@@ -58,6 +68,7 @@ class IsolateHolderService : Service() {
                 .setContentTitle(FlutterBackgroundPlugin.notificationTitle)
                 .setContentText(FlutterBackgroundPlugin.notificationText)
                 .setSmallIcon(imageId)
+                .setContentIntent(pendingIntent)
                 .setPriority(FlutterBackgroundPlugin.notificationImportance ?: NotificationCompat.PRIORITY_DEFAULT)
                 .build()
 
