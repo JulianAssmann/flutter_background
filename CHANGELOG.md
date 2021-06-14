@@ -1,3 +1,8 @@
+## 1.0.1
+
+* Tapping on the foreground notification now launches the Flutter Activity on Android
+* Fix `null` Intent error for onStartCommand on Android
+
 ## 1.0.0
 
 * Add null safety
