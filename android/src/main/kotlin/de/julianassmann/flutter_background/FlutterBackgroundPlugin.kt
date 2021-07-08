@@ -35,15 +35,46 @@ class FlutterBackgroundPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     @JvmStatic
     var notificationTitle: String? = "flutter_background foreground service"
     @JvmStatic
+    val NOTIFICATION_TITLE_KEY = "android.notificationTitle"
+    @JvmStatic
     var notificationText: String? = "Keeps the flutter app running in the background"
     @JvmStatic
+    val NOTIFICATION_TEXT_KEY = "android.notificationText"
+    @JvmStatic
     var notificationImportance: Int? = NotificationCompat.PRIORITY_DEFAULT
-
+    @JvmStatic
+    val NOTIFICATION_IMPORTANCE_KEY = "android.notificationImportance"
     @JvmStatic
     var notificationIconName: String? = "ic_launcher"
     @JvmStatic
+    val NOTIFICATION_ICON_NAME_KEY = "android.notificationIconName"
+    @JvmStatic
     var notificationIconDefType: String? = "mipmap"
+    @JvmStatic
+    val NOTIFICATION_ICON_DEF_TYPE_KEY = "android.notificationIconDefType"
+
+    fun loadNotificationConfiguration(context: Context?) {
+      var sharedPref = context?.getSharedPreferences(context?.packageName + "_preferences", Context.MODE_PRIVATE)
+      notificationTitle = sharedPref?.getString(NOTIFICATION_TITLE_KEY, notificationTitle)
+      notificationText = sharedPref?.getString(NOTIFICATION_TEXT_KEY, notificationText)
+      notificationImportance = sharedPref?.getInt(NOTIFICATION_IMPORTANCE_KEY, notificationImportance!!)
+      notificationIconName = sharedPref?.getString(NOTIFICATION_ICON_NAME_KEY, notificationIconName)
+      notificationIconDefType = sharedPref?.getString(NOTIFICATION_ICON_DEF_TYPE_KEY, notificationIconDefType)
+    }
+
+    fun saveNotificationConfiguration(context: Context?) {
+      var sharedPref = context?.getSharedPreferences(context?.packageName + "_preferences", Context.MODE_PRIVATE)
+      with (sharedPref?.edit()) {
+        this?.putString(NOTIFICATION_TITLE_KEY, notificationTitle)
+        this?.putString(NOTIFICATION_TEXT_KEY, notificationText)
+        this?.putInt(NOTIFICATION_IMPORTANCE_KEY, notificationImportance!!)
+        this?.putString(NOTIFICATION_ICON_NAME_KEY, notificationIconName)
+        this?.putString(NOTIFICATION_ICON_DEF_TYPE_KEY, notificationIconDefType)
+        this?.apply()
+      }
+    }
   }
+
 
   private fun isValidResource(context: Context, name: String, defType: String, result: Result, errorCode: String): Boolean {
     val resourceId = context.getResources().getIdentifier(name, defType, context.getPackageName())
@@ -69,11 +100,11 @@ class FlutterBackgroundPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
         result.success(hasPermissions)
       }
       "initialize" -> {
-        val title = call.argument<String>("android.notificationTitle")
-        val text = call.argument<String>("android.notificationText")
-        val importance = call.argument<Int>("android.notificationImportance")
-        val iconName = call.argument<String>("android.notificationIconName")
-        val iconDefType = call.argument<String>("android.notificationIconDefType")
+        val title = call.argument<String>(NOTIFICATION_TITLE_KEY)
+        val text = call.argument<String>(NOTIFICATION_TEXT_KEY)
+        val importance = call.argument<Int>(NOTIFICATION_IMPORTANCE_KEY)
+        val iconName = call.argument<String>(NOTIFICATION_ICON_NAME_KEY)
+        val iconDefType = call.argument<String>(NOTIFICATION_ICON_DEF_TYPE_KEY)
 
         // Set static values so the IsolateHolderService can use them later on to configure the notification
         notificationImportance = importance ?: notificationImportance
@@ -81,6 +112,8 @@ class FlutterBackgroundPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
         notificationText = text ?: text
         notificationIconName = iconName ?: notificationIconName
         notificationIconDefType = iconDefType ?: notificationIconDefType
+
+        saveNotificationConfiguration(context)
 
         if (permissionHandler!!.isWakeLockPermissionGranted() && permissionHandler!!.isIgnoringBatteryOptimizations()) {
           result.success(true)
