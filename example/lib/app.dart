@@ -1,4 +1,4 @@
-import 'package:flutter_background_example/pages/home_page.dart';
+import 'pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'bloc/tcp_client_bloc/tcp_client_bloc.dart';

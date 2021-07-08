@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AboutPage extends StatelessWidget {
-  const AboutPage({Key key}) : super(key: key);
+  const AboutPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class AboutPage extends StatelessWidget {
               Text('background_sockets demo app'),
               Text('created by Julian Aßmann (julianassmann.de)'),
               Text('made with Flutter'),
-              FlatButton(
+              TextButton(
                 child: Text('Licenses'),
                 onPressed: () {
                   showLicensePage(context: context);
