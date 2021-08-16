@@ -69,12 +69,11 @@ In order to function correctly, this plugin needs a few permissions.
 `FlutterBackground.initialize(...)` will request permissions from the user if necessary.
 You can call initialize more than one time, so you can call `initalize()` every time before you call `enableBackgroundExecution()` (see below).
 
-In order to notify the user about upcoming permission requests by the system, you need to know whether or not the app already has these permissions. You can find out by calling
+In order to notify the user about upcoming permission requests by the system, you need to know, whether or not the app already has these permissions. You can find out by calling
 
 ```dart
 bool hasPermissions = await FlutterBackground.hasPermissions;
-```
-
+``
 before calling `FlutterBackground.initialize(...)`. If the app already has all necessary permissions, no permission requests will be displayed to the user.
 
 ### Run app in background
@@ -98,7 +97,7 @@ you can stop the background execution of the app. You must call `FlutterBackgrou
 To check whether background execution is currently enabled, use
 
 ```dart
-bool enabled = FlutterBackground.isBackgroundExecutionEnabled;
+bool enabled = FlutterBackground.isBackgroundExecutionEnabled
 ```
 
 ## Example

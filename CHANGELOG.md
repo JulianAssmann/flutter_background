@@ -1,3 +1,7 @@
+## 1.0.2
+
+* Remove foreground service notification importance levels that cause an error on Android.
+
 ## 1.0.1
 
 * Tapping on the foreground notification now launches the Flutter Activity on Android
