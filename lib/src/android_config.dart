@@ -1,9 +1,12 @@
 /// Represents the importance of an android notification as described
 /// under https://developer.android.com/training/notify-user/channels#importance.
 enum AndroidNotificationImportance {
+  // Low and min importance levels apparantly are not supported, see
+  // https://github.com/JulianAssmann/flutter_background/issues/37 for more.
+
+  // Min,
+  // Low,
   Default,
-  Min,
-  Low,
   High,
   Max,
 }
