@@ -47,6 +47,7 @@ class TcpClientBloc extends Bloc<TcpClientEvent, TcpClientState> {
         notificationText:
             'Background notification for keeping the example app running in the background',
         notificationIcon: AndroidResource(name: 'background_icon'),
+        notificationImportance: AndroidNotificationImportance.Default,
       );
       // Demonstrate calling initialize twice in a row is possible without causing problems.
       hasPermissions =
