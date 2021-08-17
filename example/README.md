@@ -35,18 +35,12 @@ In the server file (`server/server.dart`) you can configure the hostname and por
 
 If you run the app in the Android Emulator, set the `hostname` in `server.dart` to `localhost` and input the IP address `10.0.2.2` (the hosts IP address from inside the Android Emulator) in the app.
 
-If you run the app on a real device, set the `hostname` in `server.dart` and in the client app to the IP address of the machine in the local network (obtained via `ifconfig` (Linux) or `ipconfig` (Windows)).
+If you run the app on a real device, set the `hostname` in `server.dart` and in the client app to the IP address of the machine in the local network (obtained via `ifconfig` (Linux/Mac OS) or `ipconfig` (Windows)).
 
 The ports specified in the server and the app must be the same.
-
-## Flutter app architecture
-
-This app uses the [BLoC pattern](https://bloclibrary.dev/#/) to manage the state. There are two BLoC's. One is for managing the state of the TCP connection/socket and handling the incoming and outgoing messages. The other is for validating the user input for the connection details.
 
 ## Tools used
 
 - [Flutter](https://flutter.dev/)
-- [BLoC](https://bloclibrary.dev/#/)
-- [flutter_bloc](https://github.com/felangel/bloc/tree/master/packages/flutter_bloc)
 - [bubble](https://github.com/vi-k/bubble)
 - [flutter_local_notifications](https://github.com/MaikuB/flutter_local_notifications)

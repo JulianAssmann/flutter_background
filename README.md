@@ -73,7 +73,7 @@ In order to notify the user about upcoming permission requests by the system, yo
 
 ```dart
 bool hasPermissions = await FlutterBackground.hasPermissions;
-``
+```
 before calling `FlutterBackground.initialize(...)`. If the app already has all necessary permissions, no permission requests will be displayed to the user.
 
 ### Run app in background

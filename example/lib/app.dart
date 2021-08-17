@@ -1,30 +1,16 @@
-import 'pages/home_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'bloc/tcp_client_bloc/tcp_client_bloc.dart';
 
-class BackgroundSocketsExampleApp extends StatefulWidget {
-  @override
-  _BackgroundSocketsExampleAppState createState() =>
-      _BackgroundSocketsExampleAppState();
-}
+import 'home_page.dart';
 
-class _BackgroundSocketsExampleAppState
-    extends State<BackgroundSocketsExampleApp> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
+class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<TcpClientBloc>(create: (context) => TcpClientBloc()),
-      ],
-      child: MaterialApp(
-        home: MainPage(),
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
       ),
+      home: HomePage(),
     );
   }
 }
