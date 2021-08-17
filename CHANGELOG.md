@@ -1,3 +1,7 @@
+## 1.0.2+1
+
+* Simplified example application by removing the use of the BLoC pattern
+
 ## 1.0.2
 
 * Remove foreground service notification importance levels that cause an error on Android.

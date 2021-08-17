@@ -12,11 +12,11 @@ Future<void> startServer() async {
     server.listen((Socket socket) {
       print(
           'New TCP client ${socket.address.address}:${socket.port} connected.');
-
       var totalSeconds = 0;
-      final timer = Timer.periodic(Duration(seconds: 60), (timer) {
+      final timer = Timer.periodic(Duration(seconds: 10), (timer) {
         totalSeconds += timer.tick;
-        socket.add(totalSeconds.toString().codeUnits);
+        final message = (totalSeconds / 60).toString() + ' minutes';
+        socket.add(message.codeUnits);
       });
       socket.handleError(() {
         print('Connection closed');
