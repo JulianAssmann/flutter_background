@@ -1,10 +1,14 @@
+## 1.0.2+2
+
+* Fix crash when targeting Android S+ due to a missing immutable flag for pending intents
+
 ## 1.0.2+1
 
 * Simplified example application by removing the use of the BLoC pattern
 
 ## 1.0.2
 
-* Remove foreground service notification importance levels that cause an error on Android.
+* Remove foreground service notification importance levels that cause an error on Android
 
 ## 1.0.1
 
@@ -23,7 +27,7 @@
 
 ## 0.1.5
 
-* Add `isBackgroundExecutionEnabled` property to enable checking the current background execution state.
+* Add `isBackgroundExecutionEnabled` property to enable checking the current background execution state
 
 ## 0.1.4
 
