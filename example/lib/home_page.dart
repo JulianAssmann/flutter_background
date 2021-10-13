@@ -69,9 +69,7 @@ class _HomePageState extends State<HomePage> {
             content: Text('Connection failed'),
             backgroundColor: Colors.red,
             duration: Duration(seconds: 3)));
-        setState(() {
-          _state = SocketConnectionState.None;
-        });
+        _state = SocketConnectionState.None;
         return Container();
       case SocketConnectionState.Disconnecting:
         return Text('Disconnecting');
