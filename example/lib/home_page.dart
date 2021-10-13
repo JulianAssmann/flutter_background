@@ -21,6 +21,8 @@ class _HomePageState extends State<HomePage> {
   TextEditingController? _hostEditingController;
   TextEditingController? _portEditingController;
   TextEditingController? _chatTextEditingController;
+  Timer? _timer;
+  int _timerTotalSeconds = 0;
 
   List<Message> _messages = [];
 
@@ -35,7 +37,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
 
     _hostEditingController = TextEditingController(text: '10.0.2.2');
-    _portEditingController = TextEditingController(text: '5555');
+    _portEditingController = TextEditingController(text: '6666');
     _chatTextEditingController = TextEditingController(text: '');
   }
 
@@ -101,7 +103,7 @@ class _HomePageState extends State<HomePage> {
               validator: (str) => isValidPort(str) ? null : 'Invalid port',
               decoration: InputDecoration(
                 helperText: 'The port the TCP server is listening on',
-                hintText: 'Enter the port here, e. g. 5555',
+                hintText: 'Enter the port here, e. g. 6666',
               ),
             ),
             ElevatedButton(
@@ -212,9 +214,25 @@ class _HomePageState extends State<HomePage> {
             _socket = await Socket.connect(host, port);
             _socketStreamSub =
                 _socket!.asBroadcastStream().listen((data) async {
-              final message = String.fromCharCodes(data);
+              final message =
+                  'Message from server: ' + String.fromCharCodes(data);
               await NotificationService().newNotification(message, false);
               setState(() {
+                _messages = _messages.toList()..add(Message(message, false));
+              });
+
+              _timer?.cancel();
+              _timer = Timer(Duration(seconds: 60), () {
+                _timerTotalSeconds += _timer!.tick;
+
+                _timerTotalSeconds += 10;
+
+                final hours = _timerTotalSeconds ~/ 3600;
+                final minutes = (_timerTotalSeconds ~/ 60) % 60;
+                final seconds = _timerTotalSeconds % 60;
+                final message =
+                    'Background service alive for ${hours}h ${minutes}m ${seconds}s';
+
                 _messages = _messages.toList()..add(Message(message, false));
               });
             }, onError: (err) {
