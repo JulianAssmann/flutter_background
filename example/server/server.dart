@@ -18,13 +18,15 @@ Future<void> startServer() async {
         final message = (totalSeconds / 60).toString() + ' minutes';
         socket.add(message.codeUnits);
       });
-      socket.handleError(() {
-        print('Connection closed');
+      socket.handleError((err, stacktrace) {
+        print('Connection closed (Error: $err, Stacktrace: $stacktrace)');
         timer.cancel();
-      }).listen((Uint8List data) {
+      });
+      socket.listen((Uint8List data) {
         print('Incoming message from client: ${String.fromCharCodes(data)}');
       });
-    });
+    }).onError((err, stacktrace) =>
+        print('Server error: $err, Stacktrace: $stacktrace'));
   } on SocketException catch (ex) {
     print(ex.message);
   }
