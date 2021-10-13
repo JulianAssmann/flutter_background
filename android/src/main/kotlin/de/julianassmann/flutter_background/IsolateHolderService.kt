@@ -3,18 +3,14 @@ package de.julianassmann.flutter_background
 import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent;
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager;
 import android.os.Build
 import android.os.IBinder
 import android.os.PowerManager
 import androidx.core.app.NotificationCompat
-import android.util.Log
-import androidx.core.app.NotificationManagerCompat
-import io.flutter.embedding.engine.FlutterEngine
 
 class IsolateHolderService : Service() {
     companion object {
@@ -37,19 +33,25 @@ class IsolateHolderService : Service() {
     }
 
     override fun onBind(intent: Intent) : IBinder? {
-        return null;
+        return null
     }
 
     @SuppressLint("WakelockTimeout")
     override fun onCreate() {
 
-        val pm = getApplicationContext().getPackageManager()
+        val pm = applicationContext.packageManager
         val notificationIntent  =
-            pm.getLaunchIntentForPackage(getApplicationContext().getPackageName())
+            pm.getLaunchIntentForPackage(applicationContext.packageName)
+
+        // See https://developer.android.com/guide/components/intents-filters#DeclareMutabilityPendingIntent
+        var flags = PendingIntent.FLAG_UPDATE_CURRENT
+        if (Build.VERSION.SDK_INT > 23) flags = flags or PendingIntent.FLAG_IMMUTABLE
+
         val pendingIntent  = PendingIntent.getActivity(
             this, 0,
-            notificationIntent, 0
+            notificationIntent, flags
         )
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                     CHANNEL_ID,
@@ -95,11 +97,11 @@ class IsolateHolderService : Service() {
             stopForeground(true)
             stopSelf()
         }
-        return START_STICKY;
+        return START_STICKY
     } 
 
     override fun onTaskRemoved(rootIntent: Intent) {
-        super.onTaskRemoved(rootIntent);
-        stopSelf();
+        super.onTaskRemoved(rootIntent)
+        stopSelf()
     }
 }
