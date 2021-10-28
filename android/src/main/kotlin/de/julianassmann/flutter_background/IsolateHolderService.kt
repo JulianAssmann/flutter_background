@@ -38,6 +38,7 @@ class IsolateHolderService : Service() {
 
     @SuppressLint("WakelockTimeout")
     override fun onCreate() {
+        FlutterBackgroundPlugin.loadNotificationConfiguration(applicationContext)
 
         val pm = applicationContext.packageManager
         val notificationIntent  =
