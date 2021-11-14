@@ -179,6 +179,7 @@ class _HomePageState extends State<HomePage> {
           'Background notification for keeping the example app running in the background',
       notificationIcon: AndroidResource(name: 'background_icon'),
       notificationImportance: AndroidNotificationImportance.Default,
+      enableWifiLock: true,
     );
 
     var hasPermissions = await FlutterBackground.hasPermissions;

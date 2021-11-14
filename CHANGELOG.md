@@ -1,3 +1,7 @@
+## 1.1.0
+
+* Add capability to enable Android Wifi Lock in the initialize function.
+
 ## 1.0.2+2
 
 * Fix crash when targeting Android S+ due to a missing immutable flag for pending intents

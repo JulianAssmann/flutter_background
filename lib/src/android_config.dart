@@ -37,6 +37,12 @@ class FlutterBackgroundAndroidConfig {
   /// The resource name of the icon to be used for the foreground notification.
   final AndroidResource notificationIcon;
 
+  /// When enabled, a WifiLock is acquired when background execution is started.
+  /// This allows the application to keep the Wi-Fi radio awake, even when the
+  /// user has not used the device in a while (e.g. for background network
+  /// communications).
+  final bool enableWifiLock;
+
   /// Creates an Android specific configuration for the [FlutterBackground] plugin.
   ///
   /// [notificationTitle] is the title used for the foreground service notification.
@@ -44,12 +50,15 @@ class FlutterBackgroundAndroidConfig {
   /// [notificationImportance] is the importance of the foreground service notification.
   /// [notificationIcon] must be a drawable resource.
   /// E. g. if the icon with name "background_icon" is in the "drawable" resource folder,
-  /// [notificationIcon] should be of value `AndroidResource(name: 'background_icon', defType: 'drawable').
-  /// It must be greater than [AndroidNotificationImportance.Min].
+  /// it should be of value `AndroidResource(name: 'background_icon', defType: 'drawable').
+  /// [enableWifiLock] indicates wether or not a WifiLock is acquired, when the
+  /// background execution is started. This allows the application to keep the
+  /// Wi-Fi radio awake, even when the user has not used the device in a while.
   const FlutterBackgroundAndroidConfig(
       {this.notificationTitle = 'Notification title',
       this.notificationText = 'Notification text',
       this.notificationImportance = AndroidNotificationImportance.Default,
       this.notificationIcon =
-          const AndroidResource(name: 'ic_launcher', defType: 'mipmap')});
+          const AndroidResource(name: 'ic_launcher', defType: 'mipmap'),
+      this.enableWifiLock = true});
 }
