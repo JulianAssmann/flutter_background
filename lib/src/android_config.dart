@@ -43,6 +43,11 @@ class FlutterBackgroundAndroidConfig {
   /// communications).
   final bool enableWifiLock;
 
+  /// When enabled, request permission to disable battery optimizations.
+  /// This is enabled by default, and should only be disabled on platforms that
+  /// do not support it (ex: Wear OS).
+  final bool shouldRequestBatteryOptimizationsOff;
+
   /// Creates an Android specific configuration for the [FlutterBackground] plugin.
   ///
   /// [notificationTitle] is the title used for the foreground service notification.
@@ -54,11 +59,13 @@ class FlutterBackgroundAndroidConfig {
   /// [enableWifiLock] indicates wether or not a WifiLock is acquired, when the
   /// background execution is started. This allows the application to keep the
   /// Wi-Fi radio awake, even when the user has not used the device in a while.
-  const FlutterBackgroundAndroidConfig(
-      {this.notificationTitle = 'Notification title',
-      this.notificationText = 'Notification text',
-      this.notificationImportance = AndroidNotificationImportance.Default,
-      this.notificationIcon =
-          const AndroidResource(name: 'ic_launcher', defType: 'mipmap'),
-      this.enableWifiLock = true});
+  const FlutterBackgroundAndroidConfig({
+    this.notificationTitle = 'Notification title',
+    this.notificationText = 'Notification text',
+    this.notificationImportance = AndroidNotificationImportance.Default,
+    this.notificationIcon =
+        const AndroidResource(name: 'ic_launcher', defType: 'mipmap'),
+    this.enableWifiLock = true,
+    this.shouldRequestBatteryOptimizationsOff = true,
+  });
 }

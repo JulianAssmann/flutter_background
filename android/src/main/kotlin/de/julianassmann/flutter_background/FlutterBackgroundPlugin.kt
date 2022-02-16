@@ -42,6 +42,8 @@ class FlutterBackgroundPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     val NOTIFICATION_IMPORTANCE_KEY = "android.notificationImportance"
     @JvmStatic
     val ENABLE_WIFI_LOCK_KEY = "android.enableWifiLock"
+    @JvmStatic
+    val SHOULD_REQUEST_BATTERY_OPTIMIZATIONS_OFF_KEY = "android.shouldRequestBatteryOptimizationsOff"
 
     @JvmStatic
     var notificationTitle: String = "flutter_background foreground service"
@@ -55,6 +57,8 @@ class FlutterBackgroundPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     var notificationIconDefType: String = "mipmap"
     @JvmStatic
     var enableWifiLock: Boolean = true
+    @JvmStatic
+    var shouldRequestBatteryOptimizationsOff: Boolean = true
 
 
     fun loadNotificationConfiguration(context: Context?) {
@@ -112,6 +116,7 @@ class FlutterBackgroundPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
         val iconName = call.argument<String>(NOTIFICATION_ICON_NAME_KEY)
         val iconDefType = call.argument<String>(NOTIFICATION_ICON_DEF_TYPE_KEY)
         val wifiLock = call.argument<Boolean>(ENABLE_WIFI_LOCK_KEY)
+        val requestBatteryOptimizationsOff = call.argument<Boolean>(SHOULD_REQUEST_BATTERY_OPTIMIZATIONS_OFF_KEY)
 
         // Set static values so the IsolateHolderService can use them later on to configure the notification
         notificationImportance = importance ?: notificationImportance
@@ -120,6 +125,8 @@ class FlutterBackgroundPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
         notificationIconName = iconName ?: notificationIconName
         notificationIconDefType = iconDefType ?: notificationIconDefType
         enableWifiLock = wifiLock ?: enableWifiLock
+
+        shouldRequestBatteryOptimizationsOff = requestBatteryOptimizationsOff ?: shouldRequestBatteryOptimizationsOff
 
         saveNotificationConfiguration(context)
 
@@ -134,8 +141,8 @@ class FlutterBackgroundPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
           return
         }
 
-        // Ensure ignoring battery optimizations is enabled
-        if (!permissionHandler!!.isIgnoringBatteryOptimizations()) {
+        // Ensure ignoring battery optimizations is enabled if requested
+        if (shouldRequestBatteryOptimizationsOff && !permissionHandler!!.isIgnoringBatteryOptimizations()) {
           if (activity != null) {
             permissionHandler!!.requestBatteryOptimizationsOff(result, activity!!)
           } else {
@@ -148,7 +155,7 @@ class FlutterBackgroundPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
         if (!permissionHandler!!.isWakeLockPermissionGranted()) {
           result.error("PermissionError", "Please add the WAKE_LOCK permission to the AndroidManifest.xml in order to use background_sockets.", "")
           return
-        } else if (!permissionHandler!!.isIgnoringBatteryOptimizations()) {
+        } else if (shouldRequestBatteryOptimizationsOff && !permissionHandler!!.isIgnoringBatteryOptimizations()) {
           result.error("PermissionError", "The battery optimizations are not turned off.", "")
         } else {
           val intent = Intent(context, IsolateHolderService::class.java)

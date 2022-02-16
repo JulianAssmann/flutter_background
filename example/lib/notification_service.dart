@@ -34,7 +34,7 @@ class NotificationService {
     final channelName = 'Text messages';
 
     androidNotificationDetails = AndroidNotificationDetails(
-        channelName, channelName, channelName,
+        channelName, channelName,
         importance: Importance.max,
         priority: Priority.high,
         vibrationPattern: vibration ? vibrationPattern : null,
