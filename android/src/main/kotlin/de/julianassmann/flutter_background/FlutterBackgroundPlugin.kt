@@ -130,7 +130,7 @@ class FlutterBackgroundPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
         saveNotificationConfiguration(context)
 
-        if (permissionHandler!!.isWakeLockPermissionGranted() && permissionHandler!!.isIgnoringBatteryOptimizations()) {
+        if (permissionHandler!!.isWakeLockPermissionGranted() && (!shouldRequestBatteryOptimizationsOff || permissionHandler!!.isIgnoringBatteryOptimizations())) {
           result.success(true)
           return
         }
