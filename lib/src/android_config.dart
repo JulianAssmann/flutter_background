@@ -43,8 +43,9 @@ class FlutterBackgroundAndroidConfig {
   /// communications).
   final bool enableWifiLock;
 
-  /// Show or increment notification badge on the app icon when the foreground
-  /// notification is shown (could be confused with actual notifications).
+  /// Show or hide notification badge on the app icon when the foreground
+  /// notification is shown (you have to reinstall the app for the change to
+  /// take effect).
   final bool showBadge;
 
   /// Creates an Android specific configuration for the [FlutterBackground] plugin.
@@ -58,7 +59,7 @@ class FlutterBackgroundAndroidConfig {
   /// [enableWifiLock] indicates wether or not a WifiLock is acquired, when the
   /// background execution is started. This allows the application to keep the
   /// Wi-Fi radio awake, even when the user has not used the device in a while.
-  /// [showBadge] indicate whether the notification badge should be shown/incremented
+  /// [showBadge] indicates whether the notification badge should be shown/incremented
   /// or not.
   const FlutterBackgroundAndroidConfig(
       {this.notificationTitle = 'Notification title',
