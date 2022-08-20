@@ -13,7 +13,7 @@ dependencies:
   flutter_bloc: ^7.0.0
   flutter_local_notifications: ^5.0.0
   bubble: ^1.2.1
-  
+
   flutter_background:
     # When depending on this package from a real application you should use:
     #   flutter_background: ^x.y.z
