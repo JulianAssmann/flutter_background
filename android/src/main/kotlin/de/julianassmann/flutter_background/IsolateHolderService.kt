@@ -95,6 +95,7 @@ class IsolateHolderService : Service() {
                 FlutterBackgroundPlugin.notificationImportance).apply {
                 description = FlutterBackgroundPlugin.notificationText
             }
+            channel.setShowBadge(FlutterBackgroundPlugin.showBadge)
             // Register the channel with the system
             val notificationManager: NotificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

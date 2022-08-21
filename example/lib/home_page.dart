@@ -180,6 +180,7 @@ class _HomePageState extends State<HomePage> {
       notificationIcon: AndroidResource(name: 'background_icon'),
       notificationImportance: AndroidNotificationImportance.Default,
       enableWifiLock: true,
+      showBadge: true,
     );
 
     var hasPermissions = await FlutterBackground.hasPermissions;
