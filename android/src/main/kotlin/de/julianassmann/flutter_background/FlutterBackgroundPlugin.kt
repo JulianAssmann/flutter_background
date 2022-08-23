@@ -43,6 +43,8 @@ class FlutterBackgroundPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     @JvmStatic
     val ENABLE_WIFI_LOCK_KEY = "android.enableWifiLock"
     @JvmStatic
+    val SHOW_BADGE_KEY = "android.showBadge"
+    @JvmStatic
     val SHOULD_REQUEST_BATTERY_OPTIMIZATIONS_OFF_KEY = "android.shouldRequestBatteryOptimizationsOff"
 
     @JvmStatic
@@ -58,6 +60,8 @@ class FlutterBackgroundPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     @JvmStatic
     var enableWifiLock: Boolean = true
     @JvmStatic
+    var showBadge: Boolean = true
+    @JvmStatic
     var shouldRequestBatteryOptimizationsOff: Boolean = true
 
 
@@ -69,6 +73,7 @@ class FlutterBackgroundPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
       notificationIconName = sharedPref?.getString(NOTIFICATION_ICON_NAME_KEY, notificationIconName) ?: notificationIconName
       notificationIconDefType = sharedPref?.getString(NOTIFICATION_ICON_DEF_TYPE_KEY, notificationIconDefType) ?: notificationIconDefType
       enableWifiLock = sharedPref?.getBoolean(ENABLE_WIFI_LOCK_KEY, false) ?: false
+      showBadge = sharedPref?.getBoolean(SHOW_BADGE_KEY, false) ?: false
     }
 
     fun saveNotificationConfiguration(context: Context?) {
@@ -80,6 +85,7 @@ class FlutterBackgroundPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
         this?.putString(NOTIFICATION_ICON_NAME_KEY, notificationIconName)
         this?.putString(NOTIFICATION_ICON_DEF_TYPE_KEY, notificationIconDefType)
         this?.putBoolean(ENABLE_WIFI_LOCK_KEY, enableWifiLock)
+        this?.putBoolean(SHOW_BADGE_KEY, showBadge)
         this?.apply()
       }
     }
@@ -116,6 +122,7 @@ class FlutterBackgroundPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
         val iconName = call.argument<String>(NOTIFICATION_ICON_NAME_KEY)
         val iconDefType = call.argument<String>(NOTIFICATION_ICON_DEF_TYPE_KEY)
         val wifiLock = call.argument<Boolean>(ENABLE_WIFI_LOCK_KEY)
+        val badge = call.argument<Boolean>(SHOW_BADGE_KEY)
         val requestBatteryOptimizationsOff = call.argument<Boolean>(SHOULD_REQUEST_BATTERY_OPTIMIZATIONS_OFF_KEY)
 
         // Set static values so the IsolateHolderService can use them later on to configure the notification
@@ -125,7 +132,7 @@ class FlutterBackgroundPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
         notificationIconName = iconName ?: notificationIconName
         notificationIconDefType = iconDefType ?: notificationIconDefType
         enableWifiLock = wifiLock ?: enableWifiLock
-
+        showBadge = badge ?: showBadge
         shouldRequestBatteryOptimizationsOff = requestBatteryOptimizationsOff ?: shouldRequestBatteryOptimizationsOff
 
         saveNotificationConfiguration(context)

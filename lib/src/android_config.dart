@@ -43,6 +43,11 @@ class FlutterBackgroundAndroidConfig {
   /// communications).
   final bool enableWifiLock;
 
+  /// Show or hide notification badge on the app icon when the foreground
+  /// notification is shown (you have to reinstall the app for the change to
+  /// take effect).
+  final bool showBadge;
+
   /// When enabled, request permission to disable battery optimizations.
   /// This is enabled by default, and should only be disabled on platforms that
   /// do not support it (ex: Wear OS).
@@ -59,6 +64,11 @@ class FlutterBackgroundAndroidConfig {
   /// [enableWifiLock] indicates wether or not a WifiLock is acquired, when the
   /// background execution is started. This allows the application to keep the
   /// Wi-Fi radio awake, even when the user has not used the device in a while.
+  /// [showBadge] indicates whether the notification badge should be shown/incremented
+  /// or not.
+  /// [shouldRequestBatteryOptimizationsOff] indicates whether or not to request
+  /// permission to disable battery optimizations. This is enabled by default, and
+  /// should only be disabled on platforms that do not support it (ex: Wear OS).
   const FlutterBackgroundAndroidConfig({
     this.notificationTitle = 'Notification title',
     this.notificationText = 'Notification text',
@@ -66,6 +76,7 @@ class FlutterBackgroundAndroidConfig {
     this.notificationIcon =
         const AndroidResource(name: 'ic_launcher', defType: 'mipmap'),
     this.enableWifiLock = true,
+    this.showBadge = true,
     this.shouldRequestBatteryOptimizationsOff = true,
   });
 }
