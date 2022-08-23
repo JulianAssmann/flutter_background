@@ -28,6 +28,8 @@ class FlutterBackground {
               androidConfig.notificationIcon.defType,
           'android.enableWifiLock': androidConfig.enableWifiLock,
           'android.showBadge': androidConfig.showBadge,
+          'android.shouldRequestBatteryOptimizationsOff':
+              androidConfig.shouldRequestBatteryOptimizationsOff,
         }) ==
         true;
     return _isInitialized;
