@@ -1,3 +1,9 @@
+## 1.2.0
+
+* Add option to hide notification badge
+* Add option to not request battery optimization permission
+* Add support for gradle 7.3+
+
 ## 1.1.0
 
 * Add capability to enable Android Wifi Lock in the initialize function.
