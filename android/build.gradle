@@ -44,7 +44,7 @@ android {
         minSdkVersion 16
     }
 
-    namespace 'de.julianassmann.flutter_background_example'
+    namespace 'de.julianassmann.flutter_background'
 }
 
 dependencies {
