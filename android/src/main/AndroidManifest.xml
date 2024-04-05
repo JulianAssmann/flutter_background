@@ -1,9 +1,11 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="de.julianassmann.flutter_background">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="de.julianassmann.flutter_background">
   <uses-permission android:name="android.permission.WAKE_LOCK" />
   <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
   <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
   <application>
-  <service android:name="de.julianassmann.flutter_background.IsolateHolderService" android:exported="true" /> 
+  <service
+      android:name="de.julianassmann.flutter_background.IsolateHolderService"
+      android:foregroundServiceType="specialUse"
+      android:exported="true" />
   </application>
 </manifest>
