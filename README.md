@@ -22,15 +22,22 @@ Add the following permissions to the `AndroidManifest.xml`:
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="de.julianassmann.flutter_background_example">
 
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
-    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <!-- Adapt to the foreground service type desired -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
 
     <application>
-    ...
+        ...
+
+        <service
+            android:name="de.julianassmann.flutter_background.IsolateHolderService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync|specialUse|..." />
     </application>
 </manifest>
 ```
+
+See [the Android docs](https://developer.android.com/develop/background-work/services/fg-service-types)
+for more information on foreground service types.
 
 ### iOS
 
