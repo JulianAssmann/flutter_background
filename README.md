@@ -2,7 +2,6 @@
 
 [!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/julianassmann)
 
-
 A plugin to keep flutter apps running in the background. Currently only works with Android.
 
 It achieves this functionality by running an [Android foreground service](https://developer.android.com/guide/components/foreground-services) in combination with a [partial wake lock](https://developer.android.com/training/scheduling/wakelock#cpu) and [disabling battery optimizations](https://developer.android.com/training/monitoring-device-state/doze-standby#support_for_other_use_cases) in order to keep the flutter isolate running.
@@ -22,12 +21,19 @@ Add the following permissions to the `AndroidManifest.xml`:
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="de.julianassmann.flutter_background_example">
 
-    <!-- Adapt to the foreground service type desired -->
+    <!-- General permissions for the flutter_background plugin -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+
+    <!-- Adapt to the foreground service type(s) desired, these are just examples -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
 
     <application>
         ...
 
+        <!-- Adapt to the foreground service type(s) desired, these are just examples -->
         <service
             android:name="de.julianassmann.flutter_background.IsolateHolderService"
             android:exported="false"
