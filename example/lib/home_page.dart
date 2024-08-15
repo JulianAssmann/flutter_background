@@ -171,6 +171,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _connectToServer(String host, int port) async {
+
+    // Request permissions to show notifications when messages are received
+    await NotificationService().initialize();
+
+    // Request permissions for the flutter_background config
     const config = FlutterBackgroundAndroidConfig(
       notificationTitle: 'flutter_background example app',
       notificationText:
@@ -216,6 +221,7 @@ class _HomePageState extends State<HomePage> {
                 _socket!.asBroadcastStream().listen((data) async {
               final message =
                   'Message from server: ${String.fromCharCodes(data)}';
+              print(message);
               await NotificationService().newNotification(message, false);
               setState(() {
                 _messages = _messages.toList()..add(Message(message, false));
