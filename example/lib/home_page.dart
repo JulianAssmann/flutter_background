@@ -11,7 +11,7 @@ import 'package:flutter_background_example/validators.dart';
 import 'notification_service.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({Key? key}) : super(key: key);
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage> {
 
   Socket? _socket;
   StreamSubscription? _socketStreamSub;
-  SocketConnectionState _state = SocketConnectionState.None;
+  SocketConnectionState _state = SocketConnectionState.none;
 
   final _formKey = GlobalKey<FormState>();
 
@@ -44,9 +44,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('flutter_background exmaple'), actions: [
+      appBar: AppBar(title: const Text('flutter_background exmaple'), actions: [
         IconButton(
-          icon: Icon(Icons.info_outline),
+          icon: const Icon(Icons.info_outline),
           onPressed: () {
             showAboutDialog(
                 applicationName: 'flutter_background example',
@@ -60,23 +60,23 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildBody() {
     switch (_state) {
-      case SocketConnectionState.None:
+      case SocketConnectionState.none:
         return _buildConnectionDetails();
-      case SocketConnectionState.Connecting:
-        return Text('Connecting');
-      case SocketConnectionState.Connected:
+      case SocketConnectionState.connecting:
+        return const Text('Connecting');
+      case SocketConnectionState.connected:
         return _buildChat();
-      case SocketConnectionState.Failed:
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      case SocketConnectionState.failed:
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text('Connection failed'),
             backgroundColor: Colors.red,
             duration: Duration(seconds: 3)));
         setState(() {
-          _state = SocketConnectionState.None;
+          _state = SocketConnectionState.none;
         });
         return Container();
-      case SocketConnectionState.Disconnecting:
-        return Text('Disconnecting');
+      case SocketConnectionState.disconnecting:
+        return const Text('Disconnecting');
     }
   }
 
@@ -92,7 +92,7 @@ class _HomePageState extends State<HomePage> {
               controller: _hostEditingController,
               autovalidateMode: AutovalidateMode.always,
               validator: (str) => isValidHost(str) ? null : 'Invalid hostname',
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 helperText: 'The IP address or hostname of the TCP server',
                 hintText: 'Enter the address here, e.g. 10.0.2.2',
               ),
@@ -101,21 +101,21 @@ class _HomePageState extends State<HomePage> {
               controller: _portEditingController,
               autovalidateMode: AutovalidateMode.always,
               validator: (str) => isValidPort(str) ? null : 'Invalid port',
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 helperText: 'The port the TCP server is listening on',
                 hintText: 'Enter the port here, e. g. 6666',
               ),
             ),
             ElevatedButton(
-                child: Text('Connect'),
-                onPressed: _state == SocketConnectionState.None
+                onPressed: _state == SocketConnectionState.none
                     ? () {
                         if (_formKey.currentState!.validate()) {
                           _connectToServer(_hostEditingController!.text,
                               int.parse(_portEditingController!.text));
                         }
                       }
-                    : null),
+                    : null,
+                child: const Text('Connect')),
           ])),
     );
   }
@@ -124,18 +124,16 @@ class _HomePageState extends State<HomePage> {
   Widget _buildChat() {
     return Column(children: [
       Expanded(
-        child: Container(
-          child: ListView.builder(
-              itemCount: _messages.length,
-              itemBuilder: (context, idx) {
-                final m = _messages[idx];
-                return Bubble(
-                  child: Text(m.text),
-                  alignment:
-                      m.sender ? Alignment.centerRight : Alignment.centerLeft,
-                );
-              }),
-        ),
+        child: ListView.builder(
+            itemCount: _messages.length,
+            itemBuilder: (context, idx) {
+              final m = _messages[idx];
+              return Bubble(
+                alignment:
+                    m.sender ? Alignment.centerRight : Alignment.centerLeft,
+                child: Text(m.text),
+              );
+            }),
       ),
       Padding(
         padding: const EdgeInsets.all(8.0),
@@ -143,12 +141,12 @@ class _HomePageState extends State<HomePage> {
           children: [
             Expanded(
               child: TextField(
-                decoration: InputDecoration(hintText: 'Message'),
+                decoration: const InputDecoration(hintText: 'Message'),
                 controller: _chatTextEditingController,
               ),
             ),
             IconButton(
-                icon: Icon(Icons.send),
+                icon: const Icon(Icons.send),
                 onPressed: () {
                   if (_chatTextEditingController!.text.isNotEmpty) {
                     final message =
@@ -164,7 +162,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       ElevatedButton(
-        child: Text('Disconnect'),
+        child: const Text('Disconnect'),
         onPressed: () {
           _disconnectFromServer();
         },
@@ -173,12 +171,12 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _connectToServer(String host, int port) async {
-    final config = FlutterBackgroundAndroidConfig(
+    const config = FlutterBackgroundAndroidConfig(
       notificationTitle: 'flutter_background example app',
       notificationText:
           'Background notification for keeping the example app running in the background',
       notificationIcon: AndroidResource(name: 'background_icon'),
-      notificationImportance: AndroidNotificationImportance.Default,
+      notificationImportance: AndroidNotificationImportance.normal,
       enableWifiLock: true,
       showBadge: true,
     );
@@ -189,8 +187,8 @@ class _HomePageState extends State<HomePage> {
           context: context,
           builder: (context) {
             return AlertDialog(
-                title: Text('Permissions needed'),
-                content: Text(
+                title: const Text('Permissions needed'),
+                content: const Text(
                     'Shortly the OS will ask you for permission to execute this app in the background. This is required in order to receive chat messages when the app is not in the foreground.'),
                 actions: [
                   TextButton(
@@ -210,21 +208,21 @@ class _HomePageState extends State<HomePage> {
         if (backgroundExecution) {
           try {
             setState(() {
-              _state = SocketConnectionState.Connecting;
+              _state = SocketConnectionState.connecting;
             });
 
             _socket = await Socket.connect(host, port);
             _socketStreamSub =
                 _socket!.asBroadcastStream().listen((data) async {
               final message =
-                  'Message from server: ' + String.fromCharCodes(data);
+                  'Message from server: ${String.fromCharCodes(data)}';
               await NotificationService().newNotification(message, false);
               setState(() {
                 _messages = _messages.toList()..add(Message(message, false));
               });
 
               _timer?.cancel();
-              _timer = Timer(Duration(seconds: 60), () {
+              _timer = Timer(const Duration(seconds: 60), () {
                 _timerTotalSeconds += _timer!.tick;
 
                 _timerTotalSeconds += 10;
@@ -240,18 +238,18 @@ class _HomePageState extends State<HomePage> {
             }, onError: (err) {
               print(err);
               setState(() {
-                _state = SocketConnectionState.Failed;
+                _state = SocketConnectionState.failed;
               });
               _disconnectFromServer();
             }, onDone: () {
               setState(() {
-                _state = SocketConnectionState.Failed;
+                _state = SocketConnectionState.failed;
               });
               _disconnectFromServer();
             }, cancelOnError: true);
 
             setState(() {
-              _state = SocketConnectionState.Connected;
+              _state = SocketConnectionState.connected;
             });
           } catch (ex) {
             print(ex);
@@ -260,7 +258,7 @@ class _HomePageState extends State<HomePage> {
             _socket = null;
             _socketStreamSub = null;
             setState(() {
-              _state = SocketConnectionState.Failed;
+              _state = SocketConnectionState.failed;
             });
           }
         }
@@ -270,7 +268,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _disconnectFromServer() async {
     setState(() {
-      _state = SocketConnectionState.Disconnecting;
+      _state = SocketConnectionState.disconnecting;
     });
 
     await _socketStreamSub?.cancel();
@@ -281,7 +279,7 @@ class _HomePageState extends State<HomePage> {
 
     setState(() {
       _messages = [];
-      _state = SocketConnectionState.None;
+      _state = SocketConnectionState.none;
     });
   }
 }

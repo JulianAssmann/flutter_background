@@ -13,7 +13,7 @@ Future<void> startServer() async {
       print(
           'New TCP client ${socket.address.address}:${socket.port} connected.');
       var totalSeconds = 0;
-      final timer = Timer.periodic(Duration(seconds: 10), (timer) {
+      final timer = Timer.periodic(const Duration(seconds: 10), (timer) {
         totalSeconds += 10;
 
         final hours = totalSeconds ~/ 3600;

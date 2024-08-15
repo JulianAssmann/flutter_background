@@ -92,11 +92,11 @@ class FlutterBackground {
       //   return -1;
       // case AndroidNotificationImportance.Min:
       //   return -2;
-      case AndroidNotificationImportance.High:
+      case AndroidNotificationImportance.high:
         return 1;
-      case AndroidNotificationImportance.Max:
+      case AndroidNotificationImportance.max:
         return 2;
-      case AndroidNotificationImportance.Default:
+      case AndroidNotificationImportance.normal:
       default:
         return 0;
     }

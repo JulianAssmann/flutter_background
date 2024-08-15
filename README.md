@@ -8,7 +8,7 @@ A plugin to keep flutter apps running in the background. Currently only works wi
 It achieves this functionality by running an [Android foreground service](https://developer.android.com/guide/components/foreground-services) in combination with a [partial wake lock](https://developer.android.com/training/scheduling/wakelock#cpu) and [disabling battery optimizations](https://developer.android.com/training/monitoring-device-state/doze-standby#support_for_other_use_cases) in order to keep the flutter isolate running.
 
 **Note:** This plugin currently only works with Android.
-PRs for iOS are very welcome, although I am not sure if a similiar effect can be achieved with iOS at all.
+PRs for iOS are very welcome, although I am not sure if a similar effect can be achieved with iOS at all.
 
 ## Getting started
 
@@ -36,12 +36,11 @@ Add the following permissions to the `AndroidManifest.xml`:
 </manifest>
 ```
 
-See [the Android docs](https://developer.android.com/develop/background-work/services/fg-service-types)
-for more information on foreground service types.
+**Important**: You must specify the appropriate `foregroundServiceType` for your use case. See the [Android docs](https://developer.android.com/about/versions/14/changes/fgs-types-required) and the [list of available service typs](https://developer.android.com/develop/background-work/services/fg-service-types) for more information on foreground service types.
 
-### iOS
+### Other platforms
 
-iOS is currently not supported.
+Android is the only supported platform. There are currently no plans to extend support for other platforms, but feel free to change that by contributing to this plugin.
 
 ## Usage
 
@@ -59,7 +58,7 @@ Before you can use this plugin, you need to initialize it by calling `FlutterBac
 final androidConfig = FlutterBackgroundAndroidConfig(
     notificationTitle: "flutter_background example app",
     notificationText: "Background notification for keeping the example app running in the background",
-    notificationImportance: AndroidNotificationImportance.Default,
+    notificationImportance: AndroidNotificationImportance.normal,
     notificationIcon: AndroidResource(name: 'background_icon', defType: 'drawable'), // Default is ic_launcher from folder mipmap
 );
 bool success = await FlutterBackground.initialize(androidConfig: androidConfig);
@@ -79,7 +78,7 @@ The arguments are:
 - `enableWifiLock`: Indicates whether or not a WifiLock is acquired when background execution is started. This allows the application to keep the Wi-Fi radio awake, even when the user has not used the device in a while (e.g. for background network communications).
 
 In this example, `background_icon` is a drawable resource in the `drawable` folders (see the example app).
-For more information check out the [Android documentation for creating notification icons](https://developer.android.com/studio/write/image-asset-studio#create-notification) for more information how to create and store an icon.  
+For more information check out the [Android documentation for creating notification icons](https://developer.android.com/studio/write/image-asset-studio#create-notification) for more information how to create and store an icon.
 
 In order to function correctly, this plugin needs a few permissions.
 `FlutterBackground.initialize(...)` will request permissions from the user if necessary.

@@ -6,9 +6,9 @@ enum AndroidNotificationImportance {
 
   // Min,
   // Low,
-  Default,
-  High,
-  Max,
+  normal,
+  high,
+  max,
 }
 
 // Represents the information required to get an Android resource.
@@ -72,7 +72,7 @@ class FlutterBackgroundAndroidConfig {
   const FlutterBackgroundAndroidConfig({
     this.notificationTitle = 'Notification title',
     this.notificationText = 'Notification text',
-    this.notificationImportance = AndroidNotificationImportance.Default,
+    this.notificationImportance = AndroidNotificationImportance.normal,
     this.notificationIcon =
         const AndroidResource(name: 'ic_launcher', defType: 'mipmap'),
     this.enableWifiLock = true,
