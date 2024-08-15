@@ -1,3 +1,8 @@
+## 1.3.0+1
+
+* Update README to not include unecessary `<uses-permission>` in example `AndroidManifest.xml`, as these are already defined in the plugins `AndroidManifest.xml`
+* Remove uncecessary double if statement in example app
+
 ## 1.3.0
 
 * **Breaking**: Support for Android 14 and above, as all foreground service must list at least one foreground service type for each service. This requires users to define
