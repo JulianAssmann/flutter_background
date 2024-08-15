@@ -21,11 +21,6 @@ Add the following permissions to the `AndroidManifest.xml`:
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="de.julianassmann.flutter_background_example">
 
-    <!-- General permissions for the flutter_background plugin -->
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
-    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
-
     <!-- Adapt to the foreground service type(s) desired, these are just examples -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
