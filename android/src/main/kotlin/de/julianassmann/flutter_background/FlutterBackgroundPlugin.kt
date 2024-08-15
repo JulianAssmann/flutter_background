@@ -15,7 +15,6 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry
-import io.flutter.plugin.common.PluginRegistry.Registrar
 
 class FlutterBackgroundPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   private var methodChannel : MethodChannel? = null
@@ -24,12 +23,6 @@ class FlutterBackgroundPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   private var context: Context? = null
 
   companion object {
-    @JvmStatic
-    fun registerWith(registrar: Registrar) {
-      val channel = MethodChannel(registrar.messenger(), "flutter_background")
-      channel.setMethodCallHandler(FlutterBackgroundPlugin())
-    }
-
     @JvmStatic
     val NOTIFICATION_TITLE_KEY = "android.notificationTitle"
     @JvmStatic

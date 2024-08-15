@@ -1,3 +1,10 @@
+## 1.3.0
+
+* **Breaking**: Support for Android 14 and above, as all foreground service must list at least one foreground service type for each service. This requires users to define
+* Remove references to deprecated v1 Android embedding as it will be removed in Flutter 3.26 (see the [Flutter 3.22 release notes](https://medium.com/flutter/whats-new-in-flutter-3-22-fbde6c164fe3) and the [migration guide](https://docs.flutter.dev/release/breaking-changes/plugin-api-migration))
+* Move Gradle from imperative apply to declarative plugins (see [here](https://docs.flutter.dev/release/breaking-changes/flutter-gradle-plugin-apply) for more information)
+* Move the example project to a new version of the [flutter_local_notifications](https://pub.dev/packages/flutter_local_notifications) to get the notifications running again in the latest versions of Android
+
 ## 1.2.0
 
 * Add option to hide notification badge
