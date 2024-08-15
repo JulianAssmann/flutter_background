@@ -171,7 +171,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _connectToServer(String host, int port) async {
-
     // Request permissions to show notifications when messages are received
     await NotificationService().initialize();
 
@@ -207,66 +206,63 @@ class _HomePageState extends State<HomePage> {
     hasPermissions = await FlutterBackground.initialize(androidConfig: config);
 
     if (hasPermissions) {
-      if (hasPermissions) {
-        final backgroundExecution =
-            await FlutterBackground.enableBackgroundExecution();
-        if (backgroundExecution) {
-          try {
+      final backgroundExecution =
+          await FlutterBackground.enableBackgroundExecution();
+      if (backgroundExecution) {
+        try {
+          setState(() {
+            _state = SocketConnectionState.connecting;
+          });
+
+          _socket = await Socket.connect(host, port);
+          _socketStreamSub = _socket!.asBroadcastStream().listen((data) async {
+            final message =
+                'Message from server: ${String.fromCharCodes(data)}';
+            print(message);
+            await NotificationService().newNotification(message, false);
             setState(() {
-              _state = SocketConnectionState.connecting;
+              _messages = _messages.toList()..add(Message(message, false));
             });
 
-            _socket = await Socket.connect(host, port);
-            _socketStreamSub =
-                _socket!.asBroadcastStream().listen((data) async {
+            _timer?.cancel();
+            _timer = Timer(const Duration(seconds: 60), () {
+              _timerTotalSeconds += _timer!.tick;
+
+              _timerTotalSeconds += 10;
+
+              final hours = _timerTotalSeconds ~/ 3600;
+              final minutes = (_timerTotalSeconds ~/ 60) % 60;
+              final seconds = _timerTotalSeconds % 60;
               final message =
-                  'Message from server: ${String.fromCharCodes(data)}';
-              print(message);
-              await NotificationService().newNotification(message, false);
-              setState(() {
-                _messages = _messages.toList()..add(Message(message, false));
-              });
+                  'Background service alive for ${hours}h ${minutes}m ${seconds}s';
 
-              _timer?.cancel();
-              _timer = Timer(const Duration(seconds: 60), () {
-                _timerTotalSeconds += _timer!.tick;
-
-                _timerTotalSeconds += 10;
-
-                final hours = _timerTotalSeconds ~/ 3600;
-                final minutes = (_timerTotalSeconds ~/ 60) % 60;
-                final seconds = _timerTotalSeconds % 60;
-                final message =
-                    'Background service alive for ${hours}h ${minutes}m ${seconds}s';
-
-                _messages = _messages.toList()..add(Message(message, false));
-              });
-            }, onError: (err) {
-              print(err);
-              setState(() {
-                _state = SocketConnectionState.failed;
-              });
-              _disconnectFromServer();
-            }, onDone: () {
-              setState(() {
-                _state = SocketConnectionState.failed;
-              });
-              _disconnectFromServer();
-            }, cancelOnError: true);
-
-            setState(() {
-              _state = SocketConnectionState.connected;
+              _messages = _messages.toList()..add(Message(message, false));
             });
-          } catch (ex) {
-            print(ex);
-            _socket?.close();
-            _socketStreamSub?.cancel();
-            _socket = null;
-            _socketStreamSub = null;
+          }, onError: (err) {
+            print(err);
             setState(() {
               _state = SocketConnectionState.failed;
             });
-          }
+            _disconnectFromServer();
+          }, onDone: () {
+            setState(() {
+              _state = SocketConnectionState.failed;
+            });
+            _disconnectFromServer();
+          }, cancelOnError: true);
+
+          setState(() {
+            _state = SocketConnectionState.connected;
+          });
+        } catch (ex) {
+          print(ex);
+          _socket?.close();
+          _socketStreamSub?.cancel();
+          _socket = null;
+          _socketStreamSub = null;
+          setState(() {
+            _state = SocketConnectionState.failed;
+          });
         }
       }
     }

@@ -1,6 +1,6 @@
 name: flutter_background
-description: A plugin to keep flutter apps running in the background.
-version: 1.3.0
+description: Run apps in the background using foreground services on Android. Ideal for applications that require continuous operation, such as background data synchronization or messaging.
+version: 1.3.0+1
 repository: https://github.com/JulianAssmann/flutter_background
 homepage: https://julianassmann.de/
 
