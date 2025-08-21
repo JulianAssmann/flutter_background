@@ -239,6 +239,7 @@ class FlutterBackgroundPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   }
 
   private fun stopListeningToActivity() {
+    permissionHandler?.cleanup()
     this.activity = null
     permissionHandler = null
   }

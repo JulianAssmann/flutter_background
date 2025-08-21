@@ -2,30 +2,35 @@ package de.julianassmann.flutter_background
 
 import android.Manifest
 import android.app.Activity
+import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.os.PowerManager
 import android.provider.Settings
 import io.flutter.plugin.common.MethodChannel
-import io.flutter.plugin.common.PluginRegistry
 
-class PermissionHandler(private val context: Context,
-                        private val addActivityResultListener: ((PluginRegistry.ActivityResultListener) -> Unit),
-                        private val addRequestPermissionsResultListener: ((PluginRegistry.RequestPermissionsResultListener) -> Unit)) {
+class PermissionHandler(private val context: Context) {
     companion object {
-        const val PERMISSION_CODE_IGNORE_BATTERY_OPTIMIZATIONS = 5672353
+        private const val TAG = "PermissionHandler"
+        private const val TIMEOUT_MS = 60000L
     }
 
-    fun isWakeLockPermissionGranted(): Boolean
-    {
+    private var lifecycleCallback: Application.ActivityLifecycleCallbacks? = null
+    private var pendingBatteryOptimizationResult: MethodChannel.Result? = null
+    private var isWaitingForBatteryOptimization = false
+
+    fun isWakeLockPermissionGranted(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             context.checkSelfPermission(Manifest.permission.WAKE_LOCK) == PackageManager.PERMISSION_GRANTED
         } else {
             true
-        };
+        }
     }
 
     fun isIgnoringBatteryOptimizations(): Boolean {
@@ -38,54 +43,109 @@ class PermissionHandler(private val context: Context,
         }
     }
 
-    fun requestBatteryOptimizationsOff(
-            result: MethodChannel.Result,
-            activity: Activity) {
+    fun requestBatteryOptimizationsOff(result: MethodChannel.Result, activity: Activity) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             // Before Android M the battery optimization doesn't exist -> Always "ignoring"
             result.success(true)
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val powerManager = (context.getSystemService(Context.POWER_SERVICE) as PowerManager)
-            when {
-                powerManager.isIgnoringBatteryOptimizations(context.packageName) -> {
-                    result.success(true)
+            return
+        }
+
+        val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+
+        when {
+            powerManager.isIgnoringBatteryOptimizations(context.packageName) -> {
+                result.success(true)
+            }
+            context.checkSelfPermission(Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS) == PackageManager.PERMISSION_DENIED -> {
+                result.error(
+                    "flutter_background.PermissionHandler",
+                    "The app does not have the REQUEST_IGNORE_BATTERY_OPTIMIZATIONS permission required to ask the user for whitelisting.See the documentation on how to setup this plugin properly.",
+                    null
+                )
+            }
+            else -> {
+                setupLifecycleDetection(activity, result)
+
+                val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
+                    data = Uri.parse("package:${context.packageName}")
                 }
-                context.checkSelfPermission(Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS) == PackageManager.PERMISSION_DENIED -> {
-                    result.error(
-                            "flutter_background.PermissionHandler",
-                            "The app does not have the REQUEST_IGNORE_BATTERY_OPTIMIZATIONS permission required to ask the user for whitelisting. See the documentation on how to setup this plugin properly.",
-                            null)
-                }
-                else -> {
-                    addActivityResultListener(PermissionActivityResultListener(result::success, result::error))
-                    val intent = Intent()
-                    intent.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
-                    intent.data = Uri.parse("package:${context.packageName}")
-                    activity.startActivityForResult(intent, PERMISSION_CODE_IGNORE_BATTERY_OPTIMIZATIONS)
+
+                try {
+                    activity.startActivity(intent)
+                } catch (e: Exception) {
+                    cleanupLifecycleDetection()
+                    result.error("BatteryOptimizationError", "Unable to request battery optimization permission", e.message)
                 }
             }
         }
     }
-}
 
-class PermissionActivityResultListener(
-        private val onSuccess: (Any?) -> Unit,
-        private val onError: (String, String?, Any?) -> Unit) : PluginRegistry.ActivityResultListener {
+    private fun setupLifecycleDetection(activity: Activity, result: MethodChannel.Result) {
+        cleanupLifecycleDetection()
 
-    private var alreadyCalled: Boolean = false;
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
-        try {
-            if (alreadyCalled || requestCode != PermissionHandler.PERMISSION_CODE_IGNORE_BATTERY_OPTIMIZATIONS) {
-                return false
+        pendingBatteryOptimizationResult = result
+        isWaitingForBatteryOptimization = true
+
+        lifecycleCallback = object : Application.ActivityLifecycleCallbacks {
+            private var wasPaused = false
+            private val timeoutHandler = Handler(Looper.getMainLooper())
+            private val timeoutRunnable = Runnable { handleBatteryOptimizationReturn() }
+
+            override fun onActivityResumed(activity: Activity) {
+                if (wasPaused && isWaitingForBatteryOptimization) {
+                    timeoutHandler.postDelayed({ handleBatteryOptimizationReturn() }, 500)
+                }
             }
 
-            alreadyCalled = true
+            override fun onActivityPaused(activity: Activity) {
+                if (isWaitingForBatteryOptimization) {
+                    wasPaused = true
+                    timeoutHandler.postDelayed(timeoutRunnable, TIMEOUT_MS)
+                }
+            }
 
-            onSuccess(resultCode == Activity.RESULT_OK)
-        } catch (ex: Exception) {
-            onError("flutter_background.PermissionHandler", "Error while waiting for user to disable battery optimizations", ex.localizedMessage)
+            override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {}
+            override fun onActivityStarted(activity: Activity) {}
+            override fun onActivityStopped(activity: Activity) {}
+            override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
+            override fun onActivityDestroyed(activity: Activity) {}
         }
 
-        return true
+        activity.application.registerActivityLifecycleCallbacks(lifecycleCallback)
+    }
+
+    private fun cleanupLifecycleDetection() {
+        lifecycleCallback?.let { callback ->
+                val app = context.applicationContext as Application
+                app.unregisterActivityLifecycleCallbacks(callback)
+        }
+        lifecycleCallback = null
+        pendingBatteryOptimizationResult = null
+        isWaitingForBatteryOptimization = false
+    }
+
+    private fun handleBatteryOptimizationReturn() {
+        if (!isWaitingForBatteryOptimization || pendingBatteryOptimizationResult == null) {
+            return
+        }
+
+        try {
+            val isIgnoringBatteryOptimizations = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+                powerManager.isIgnoringBatteryOptimizations(context.packageName)
+            } else {
+                true
+            }
+
+            pendingBatteryOptimizationResult?.success(isIgnoringBatteryOptimizations)
+        } catch (e: Exception) {
+            pendingBatteryOptimizationResult?.error("BatteryOptimizationError", "Error checking permission status", e.message)
+        } finally {
+            cleanupLifecycleDetection()
+        }
+    }
+
+    fun cleanup() {
+        cleanupLifecycleDetection()
     }
 }
