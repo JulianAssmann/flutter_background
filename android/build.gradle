@@ -7,7 +7,7 @@ group 'de.julianassmann.flutter_background'
 version '1.0-SNAPSHOT'
 
 android {
-    compileSdkVersion 34
+    compileSdkVersion flutter.compileSdkVersion
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
