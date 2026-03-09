@@ -1,3 +1,8 @@
+## 1.3.1
+
+* Fix battery optimization callback not being invoked on Android
+* Update example app to use Gradle 8.7, AGP 8.6.0, and Kotlin 2.1.0
+
 ## 1.3.0+1
 
 * Update README to not include unecessary `<uses-permission>` in example `AndroidManifest.xml`, as these are already defined in the plugins `AndroidManifest.xml`

@@ -20,7 +20,7 @@ You need to have the following tools installed:
 To start the server, go into the `server` folder and run
 
 ```bash
-dart server.dart
+dart server/server.dart
 ```
 
 To start the app, go into the `app` folder and run

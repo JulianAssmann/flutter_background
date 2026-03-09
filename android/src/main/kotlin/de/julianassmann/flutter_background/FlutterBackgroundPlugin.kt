@@ -14,7 +14,6 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import io.flutter.plugin.common.PluginRegistry
 
 class FlutterBackgroundPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   private var methodChannel : MethodChannel? = null
@@ -201,10 +200,7 @@ class FlutterBackgroundPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   }
 
   override fun onAttachedToActivity(binding: ActivityPluginBinding) {
-    startListeningToActivity(
-            binding.activity,
-            binding::addActivityResultListener,
-            binding::addRequestPermissionsResultListener)
+    startListeningToActivity(binding.activity)
   }
 
   override fun onDetachedFromActivityForConfigChanges() {
@@ -226,19 +222,13 @@ class FlutterBackgroundPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     context = null
   }
 
-  private fun startListeningToActivity(
-          activity: Activity,
-          addActivityResultListener: ((PluginRegistry.ActivityResultListener) -> Unit),
-          addRequestPermissionResultListener: ((PluginRegistry.RequestPermissionsResultListener) -> Unit)
-  ) {
+  private fun startListeningToActivity(activity: Activity) {
     this.activity = activity
-    permissionHandler = PermissionHandler(
-            activity.applicationContext,
-            addActivityResultListener,
-            addRequestPermissionResultListener)
+    permissionHandler = PermissionHandler(activity.applicationContext)
   }
 
   private fun stopListeningToActivity() {
+    permissionHandler?.cleanup()
     this.activity = null
     permissionHandler = null
   }
