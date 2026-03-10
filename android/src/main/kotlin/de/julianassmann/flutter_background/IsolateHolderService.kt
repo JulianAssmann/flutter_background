@@ -47,11 +47,12 @@ class IsolateHolderService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int) : Int {
-        if (intent?.action == ACTION_SHUTDOWN) {
-            cleanupService()
-            stopSelf()
-        } else if (intent?.action == ACTION_START) {
-            startService()
+        when (intent?.action) {
+            ACTION_SHUTDOWN -> {
+                cleanupService()
+                stopSelf()
+            }
+            else -> startService() // ACTION_START or null (OS sticky restart)
         }
         return START_STICKY
     }
@@ -112,6 +113,7 @@ class IsolateHolderService : Service() {
             .setPriority(FlutterBackgroundPlugin.notificationImportance)
             .build()
 
+        wakeLock?.apply { if (isHeld) release() }
         (getSystemService(Context.POWER_SERVICE) as PowerManager).run {
             wakeLock = newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, WAKELOCK_TAG).apply {
                 setReferenceCounted(false)
@@ -119,6 +121,9 @@ class IsolateHolderService : Service() {
             }
         }
 
+        if (FlutterBackgroundPlugin.enableWifiLock) {
+            wifiLock?.apply { if (isHeld) release() }
+        }
         (applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager).run {
             wifiLock = createWifiLock(WifiManager.WIFI_MODE_FULL, WIFILOCK_TAG).apply {
                 setReferenceCounted(false)
